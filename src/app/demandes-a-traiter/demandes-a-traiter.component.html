@@ -1,0 +1,61 @@
+<div class="dashboard-layout">
+  <app-user-sidebar></app-user-sidebar>
+
+  <div class="dashboard-content">
+    <h2>Demandes à Traiter</h2>
+
+    <div *ngIf="requests.length === 0" class="no-requests">No requests to review.</div>
+
+    <div *ngFor="let req of requests" class="request-card" (click)="openRequest(req)">
+      <p><strong>Demande:</strong> {{ req.userName }} ({{ req.userEmail }})</p>
+      <p><strong>Application:</strong> {{ req.applicationName }}</p>
+      <p><strong>Date:</strong> {{ req.submittedAt | date:'short' }}</p>
+      <p><strong>État:</strong> {{ req.state }}</p>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
+      <div class="modal-box" (click)="$event.stopPropagation()">
+        <h3>Review Request</h3>
+        <p><strong>User:</strong> {{ selectedRequest?.userName }} ({{ selectedRequest?.userEmail }})</p>
+        <p><strong>Application:</strong> {{ selectedRequest?.applicationName }}</p>
+
+        <div class="module-section" *ngFor="let mod of parsedModules">
+          <h4>{{ mod.name }}</h4>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Fonction</th>
+                <th>Consultation</th>
+                <th>Création</th>
+                <th>Modification</th>
+                <th>Suppression</th>
+                <th>Validation</th>
+                <th>Commentaire</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let func of mod.functions">
+                <td>{{ func.name }}</td>
+                <td><input type="checkbox" [checked]="func.options.consultation" disabled></td>
+                <td><input type="checkbox" [checked]="func.options.creation" disabled></td>
+                <td><input type="checkbox" [checked]="func.options.modification" disabled></td>
+                <td><input type="checkbox" [checked]="func.options.suppression" disabled></td>
+                <td><input type="checkbox" [checked]="func.options.validation" disabled></td>
+                <td>{{ func.comment }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="text-end mt-3">
+          <button class="btn btn-success" [disabled]="isSubmitting" (click)="validateRequest(selectedRequest.id)">
+            <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1"></span>
+            Valider
+          </button>
+          <button class="btn btn-secondary ms-2" (click)="closeModal()">Fermer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

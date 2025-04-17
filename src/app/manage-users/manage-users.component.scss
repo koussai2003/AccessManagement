@@ -1,0 +1,72 @@
+@use "sass:color";
+
+// User Manager Styles
+.user-manager {
+  .card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn {
+    padding: 10px 16px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: 0.3s ease-in-out;
+
+    &-success {
+      background: #8B5E3B;
+      color: #fff;
+
+      &:hover {
+        background: color.adjust(#8B5E3B, $lightness: -10%);
+      }
+    }
+
+    &-danger {
+      background: #d9534f;
+      color: #fff;
+
+      &:hover {
+        background: color.adjust(#d9534f, $lightness: -10%);
+      }
+    }
+
+    &-warning {
+      background: #C19A6B;
+      color: #fff;
+
+      &:hover {
+        background: color.adjust(#C19A6B, $lightness: -10%);
+      }
+    }
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    margin-top: 20px;
+    border-radius: 8px;
+    overflow: hidden;
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background: #8B5E3B;
+      color: #fff;
+    }
+
+    tbody tr:hover {
+      background: color.adjust(#8B5E3B, $lightness: 30%);
+    }
+  }
+}

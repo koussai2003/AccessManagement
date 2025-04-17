@@ -1,0 +1,129 @@
+<div class="user-manager container mt-5">
+  <h2>Manage Users</h2>
+    <div class="card p-4 mb-5 shadow-sm">
+      <h4>Add New User</h4>
+      <div class="row g-3">
+        <div class="col-md-3"><input class="form-control" placeholder="Nom" [(ngModel)]="newUser.name"></div>
+        <div class="col-md-3"><input class="form-control" placeholder="Prenom" [(ngModel)]="newUser.lastName"></div>
+        <div class="col-md-3"><input class="form-control" placeholder="Email" [(ngModel)]="newUser.email" type="email"></div>
+        <div class="col-md-3"><input class="form-control" placeholder="Password" [(ngModel)]="newUser.password" type="password"></div>
+        
+        <div class="col-md-3"><input class="form-control" placeholder="Fonction" [(ngModel)]="newUser.fonction"></div>
+        <div class="col-md-3">
+          <select class="form-control" [(ngModel)]="newUser.societe">
+            <option value="" disabled selected hidden>Sélectionner Société</option>
+            <option *ngFor="let societe of societes" [value]="societe">{{ societe }}</option>
+          </select>
+          
+        </div>
+        
+        <div class="col-md-3"><input class="form-control" placeholder="Direction" [(ngModel)]="newUser.direction"></div>
+        
+        <div class="col-md-3">
+          <select class="form-control" [(ngModel)]="newUser.statut">
+            <option value="actif">Actif</option>
+            <option value="inactif">Inactif</option>
+          </select>
+        </div>
+  
+        <div class="col-md-4"><input class="form-control" type="email" placeholder="Validateur 1 (required)" [(ngModel)]="newUser.validateur1" required></div>
+        <div class="col-md-4"><input class="form-control" type="email" placeholder="Validateur 2 (optional)" [(ngModel)]="newUser.validateur2"></div>
+        <div class="col-md-4"><input class="form-control" type="email" placeholder="Validateur 3 (optional)" [(ngModel)]="newUser.validateur3"></div>
+  
+        <div class="col-md-3">
+          <select class="form-control" [(ngModel)]="newUser.role">
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+  
+        <div class="col-md-2 d-grid">
+          <button class="btn btn-success" [disabled]="!isValidNewValidateur1()" (click)="addUser()">Add</button>
+        </div>
+      </div>
+    </div>
+  
+  
+
+  <!-- Users Table -->
+  <div class="table-responsive">
+      <table class="table table-striped mt-3">
+          <thead class="table-dark">
+              <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Actions</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr *ngFor="let user of users">
+                  <td>{{ user.id }}</td>
+                  <td>{{ user.name }}</td>
+                  <td>{{ user.email }}</td>
+                  <td>
+                      <span class="badge" [ngClass]="user.role === 'admin' ? 'bg-danger' : 'bg-primary'">
+                          {{ user.role }}
+                      </span>
+                  </td>
+                  <td>
+                      <button class="btn btn-warning btn-sm me-2" (click)="editUser(user)">
+                          <i class="fa fa-edit"></i> Edit
+                      </button>
+                      <button class="btn btn-danger btn-sm" (click)="deleteUser(user.id)" [disabled]="user.id === loggedInUserId">
+                          <i class="fa fa-trash"></i> Delete
+                      </button>
+                  </td>
+              </tr>
+          </tbody>
+      </table>
+  </div>
+
+  <!-- Edit User Form -->
+  <!-- 🔸 EDIT USER BLOCK -->
+<div class="card p-4 mt-4 shadow-sm" *ngIf="editingUser">
+    <h4>Edit User</h4>
+    <div class="row g-3">
+      <div class="col-md-3"><input class="form-control" placeholder="Nom" [(ngModel)]="editingUser.name"></div>
+      <div class="col-md-3"><input class="form-control" placeholder="Prenom" [(ngModel)]="editingUser.lastName"></div>
+      <div class="col-md-3"><input class="form-control" placeholder="Email" [(ngModel)]="editingUser.email"></div>
+      <div class="col-md-3"><input class="form-control" placeholder="New Password (optional)" [(ngModel)]="editingUser.password" type="password"></div>
+      
+      <div class="col-md-3"><input class="form-control" placeholder="Fonction" [(ngModel)]="editingUser.fonction"></div>
+      <div class="col-md-3">
+        <select class="form-control" [(ngModel)]="editingUser.societe">
+          <option value="" disabled selected hidden>Sélectionner Société</option>
+          <option *ngFor="let societe of societes" [value]="societe">{{ societe }}</option>
+        </select>
+        
+      </div>
+      
+      <div class="col-md-3"><input class="form-control" placeholder="Direction" [(ngModel)]="editingUser.direction"></div>
+      
+      <div class="col-md-3">
+        <select class="form-control" [(ngModel)]="editingUser.statut">
+          <option value="actif">Actif</option>
+          <option value="inactif">Inactif</option>
+        </select>
+      </div>
+  
+      <div class="col-md-4"><input class="form-control" type="email" placeholder="Validateur 1" [(ngModel)]="editingUser.validateur1"></div>
+      <div class="col-md-4"><input class="form-control" type="email" placeholder="Validateur 2" [(ngModel)]="editingUser.validateur2"></div>
+      <div class="col-md-4"><input class="form-control" type="email" placeholder="Validateur 3" [(ngModel)]="editingUser.validateur3"></div>
+  
+      <div class="col-md-3">
+        <select class="form-control" [(ngModel)]="editingUser.role">
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+  
+      <div class="col-md-3 d-grid">
+        <button class="btn btn-success" [disabled]="!isValidEditValidateur1()" (click)="updateUser()">Save</button>
+        <button class="btn btn-secondary mt-2" (click)="cancelEdit()">Cancel</button>
+      </div>
+    </div>
+  </div>
+  
+</div>

@@ -1,0 +1,66 @@
+<div class="dashboard-layout">
+  <app-user-sidebar></app-user-sidebar>
+
+  <div class="request-container">
+    <h2>My Request History</h2>
+
+    <div *ngIf="requests.length === 0" class="no-requests">
+      No requests submitted yet.
+    </div>
+
+    <div *ngFor="let req of requests" class="request-card">
+      <div class="request-id">Dem{{ req.id }}</div>
+      <div class="request-details">
+        <p><strong>Application:</strong> {{ req.applicationName }}</p>
+        <p><strong>Date:</strong> {{ req.submittedAt | date:'short' }}</p>
+        <p><strong>Status:</strong> {{ req.state }}</p>
+
+        <button class="btn btn-outline-primary me-2" *ngIf="!canEdit(req)" (click)="openRequest(req)">View</button>
+        <button class="btn btn-warning" *ngIf="canEdit(req)" (click)="editRequest(req)">Edit</button>
+      </div>
+    </div>
+
+    <!-- Modal (View & Edit combined) -->
+    <div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
+      <div class="modal-box" (click)="$event.stopPropagation()">
+        <h4 *ngIf="isEditMode">Edit Request</h4>
+        <h4 *ngIf="!isEditMode">{{ selectedRequest?.applicationName }} - Permissions</h4>
+        <p><strong>User:</strong> {{ selectedRequest?.userName }} ({{ selectedRequest?.userEmail }})</p>
+        <div *ngFor="let mod of parsedModules" class="module-section">
+          <h5>{{ mod.name }}</h5>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Function</th>
+                <th>Consultation</th>
+                <th>Création</th>
+                <th>Modification</th>
+                <th>Suppression</th>
+                <th>Validation</th>
+                <th>Comment</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let func of mod.functions">
+                <td>{{ func.name }}</td>
+                <td><input type="checkbox" [(ngModel)]="func.options.consultation" [disabled]="!isEditMode" /></td>
+                <td><input type="checkbox" [(ngModel)]="func.options.creation" [disabled]="!isEditMode" /></td>
+                <td><input type="checkbox" [(ngModel)]="func.options.modification" [disabled]="!isEditMode" /></td>
+                <td><input type="checkbox" [(ngModel)]="func.options.suppression" [disabled]="!isEditMode" /></td>
+                <td><input type="checkbox" [(ngModel)]="func.options.validation" [disabled]="!isEditMode" /></td>
+                <td>
+                  <textarea [(ngModel)]="func.comment" [disabled]="!isEditMode"></textarea>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="text-end mt-3">
+          <button *ngIf="isEditMode" class="btn btn-success me-2" (click)="saveEditedRequest()">Save</button>
+          <button class="btn btn-secondary" (click)="closeModal()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

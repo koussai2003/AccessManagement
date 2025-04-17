@@ -1,0 +1,74 @@
+@use "sass:color";
+
+// Theme Variables (reused)
+$primary-brown: #8B5E3B;
+$dark-brown: #6A4028;
+$light-brown: #C19A6B;
+$background: #F5EFE6;
+$text-color: #2D2D2D;
+$hover-light: #A57B56;
+$white: #fff;
+
+.annex-wrapper {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $background;
+  color: $text-color;
+  font-family: 'Segoe UI', sans-serif;
+
+  .annex-box {
+    background-color: $white;
+    border: 1px solid $light-brown;
+    border-radius: 10px;
+    padding: 40px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+
+    h2 {
+      color: $primary-brown;
+      margin-bottom: 10px;
+      font-size: 24px;
+    }
+
+    p {
+      margin-bottom: 25px;
+      color: $text-color;
+      font-size: 16px;
+    }
+
+    input.form-control {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid $light-brown;
+      border-radius: 6px;
+      font-size: 16px;
+      margin-bottom: 20px;
+
+      &:focus {
+        border-color: $primary-brown;
+        outline: none;
+        box-shadow: 0 0 0 3px color.adjust($primary-brown, $lightness: 30%);
+      }
+    }
+
+    .btn-change {
+      background-color: $primary-brown;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: $hover-light;
+      }
+    }
+  }
+}

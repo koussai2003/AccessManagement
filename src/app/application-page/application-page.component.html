@@ -1,0 +1,53 @@
+<div class="app-layout">
+  <!-- Sidebar -->
+  <app-user-sidebar />
+
+
+  <div class="content">
+    <h2>Select an Application</h2>
+    <div class="app-grid">
+      <div class="app-card" *ngFor="let app of applications" (click)="openApplication(app)">
+        <img [src]="app.logoUrl" alt="{{ app.name }}" class="app-logo">
+        <h4 class="app-title">{{ app.name }}</h4>
+      </div>
+    </div>
+    <div class="modal-backdrop" *ngIf="showPermissionsModal" (click)="closePermissionsModal($event)">
+      <div class="modal-box animate-in" (click)="$event.stopPropagation()">
+        <h3>Permissions for {{ selectedApp?.name }}</h3>
+        <div class="module-section" *ngFor="let mod of modules">
+          <h4>{{ mod.name }}</h4>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Fonction</th>
+                <th>Consultation</th>
+                <th>Création</th>
+                <th>Modification</th>
+                <th>Suppression</th>
+                <th>Validation</th>
+                <th>Commentaire</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let func of mod.functions">
+                <td>{{ func.name }}</td>
+                <td><input type="checkbox" [(ngModel)]="func.options.consultation"></td>
+                <td><input type="checkbox" [(ngModel)]="func.options.creation"></td>
+                <td><input type="checkbox" [(ngModel)]="func.options.modification"></td>
+                <td><input type="checkbox" [(ngModel)]="func.options.suppression"></td>
+                <td><input type="checkbox" [(ngModel)]="func.options.validation"></td>
+                <td><textarea class="form-control" [(ngModel)]="func.comment"></textarea></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-actions">
+          <button (click)="closePermissionsModal($event)">Cancel</button>
+          <button (click)="submitRequest()">Send</button>
+        </div>
+      </div>
+    </div>
+    
+
+  </div>
+</div>

@@ -1,0 +1,264 @@
+@use "sass:color";
+
+$primary-brown: #8B5E3B;
+$dark-brown: #6A4028;
+$light-brown: #C19A6B;
+$background: #F5EFE6;
+$text-color: #2D2D2D;
+$hover-light: #A57B56;
+$white: #fff;
+
+.app-layout {
+  display: flex;
+  height: 100vh;
+  background-color: $background;
+}
+
+// Sidebar
+.sidebar {
+  width: 250px;
+  background-color: $dark-brown;
+  color: $white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  
+  .sidebar-title {
+    font-size: 22px;
+    font-weight: bold;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+
+    li {
+      margin-bottom: 15px;
+      cursor: pointer;
+
+      a {
+        color: $white;
+        text-decoration: none;
+        font-size: 18px;
+        display: block;
+        padding: 10px;
+        border-radius: 5px;
+        transition: background 0.3s;
+
+        &:hover {
+          background-color: $hover-light;
+        }
+      }
+    }
+  }
+}
+
+// Main Content
+.content {
+  flex-grow: 1;
+  padding: 40px;
+  color: $text-color;
+  text-align: center;
+
+  h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .app-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    justify-items: center;
+  }
+
+  .app-card {
+    background: $white;
+    border: 1px solid $light-brown;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 250px;
+
+    &:hover {
+      background-color: $hover-light;
+      transform: translateY(-3px);
+    }
+
+    .app-logo {
+      max-width: 100px;
+      height: 50px;
+      margin-bottom: 10px;
+    }
+
+    .app-title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+  }
+}
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(45, 45, 45, 0.6); // Gray overlay
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+
+  .modal-box {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 95vw; // Bigger width
+    max-height: 90vh; // Add max height
+    overflow-y: auto; // Scroll if too tall
+    overflow-x: auto; // Scroll horizontally
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    animation: popIn 0.3s ease-out forwards;
+
+    h3 {
+      margin-bottom: 15px;
+      color: $primary-brown;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid $light-brown;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: space-between;
+
+      button {
+        padding: 8px 16px;
+        background-color: $primary-brown;
+        color: $white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+
+        &:hover {
+          background-color: $hover-light;
+        }
+      }
+    }
+    .module-section {
+      margin-bottom: 25px;
+    
+      table {
+        width: 100%;
+        min-width: 800px;
+        background: $white;
+        border-radius: 8px;
+        overflow: hidden;
+        border-collapse: collapse;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      }
+    
+      th {
+        background: $primary-brown;
+        color: $white;
+        padding: 10px;
+      }
+    
+      td {
+        text-align: center;
+        vertical-align: middle;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+    
+        textarea {
+          width: 100%;
+          resize: none;
+          border: 1px solid $light-brown;
+          border-radius: 4px;
+          padding: 6px;
+        }
+    
+        input[type="checkbox"] {
+          transform: scale(1.2);
+          cursor: pointer;
+        }
+      }
+    
+      tbody tr:hover {
+        background: color.adjust($primary-brown, $lightness: 30%);
+      }
+    }
+    
+  }
+}
+
+@keyframes popIn {
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+}
+.modal-box.large-form {
+  width: 95vw; /* Increase width to take 95% of the viewport width */
+  min-width: 800px; /* Ensure the modal doesn't get too narrow */
+  max-width: 95vw; /* Prevents it from growing too large */
+  max-height: 90vh;
+  overflow-y: auto;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+
+  .permissions-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+
+    th, td {
+      border: 1px solid $light-brown;
+      padding: 8px;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    th {
+      background-color: $primary-brown;
+      color: $white;
+    }
+
+    td:first-child {
+      text-align: left;
+      font-weight: bold;
+      background-color: #fef9f6;
+    }
+
+    textarea {
+      width: 100%;
+      height: 50px;
+      border-radius: 5px;
+      border: 1px solid $light-brown;
+      padding: 5px;
+      resize: vertical;
+    }
+
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}

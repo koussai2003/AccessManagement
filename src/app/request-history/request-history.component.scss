@@ -1,0 +1,251 @@
+@use "sass:color";
+
+// Theme Variables
+$primary-brown: #8B5E3B;
+$dark-brown: #6A4028;
+$light-brown: #C19A6B;
+$background: #F5EFE6;
+$text-color: #2D2D2D;
+$hover-light: #A57B56;
+$white: #fff;
+
+.request-container {
+  padding: 30px;
+  background-color: $background;
+  color: $text-color;
+
+  h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: $primary-brown;
+  }
+
+  .no-requests {
+    font-style: italic;
+    color: $light-brown;
+  }
+
+  .request-card {
+    background-color: $white;
+    border: 1px solid $light-brown;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: translateY(-3px);
+      background-color: $hover-light;
+    }
+
+    .request-id {
+      font-weight: bold;
+      color: $dark-brown;
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    .request-details {
+      p {
+        margin: 5px 0;
+        font-size: 16px;
+      }
+
+      button {
+        margin-top: 10px;
+        margin-right: 10px;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+
+        &.btn-outline-primary {
+          background-color: $light-brown;
+          color: $white;
+
+          &:hover {
+            background-color: $primary-brown;
+            color: white;
+          }
+        }
+
+        &.btn-warning {
+          background-color: $light-brown;
+          color: white;
+
+          &:hover {
+            background-color: $primary-brown;
+          }
+        }
+      }
+    }
+  }
+
+  .modal-backdrop {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  
+    .modal-box {
+      background: $white;
+      padding: 30px;
+      width: 90%;
+      max-width: 1000px;
+      border-radius: 10px;
+      overflow-y: auto;
+      max-height: 90vh;
+  
+      h4 {
+        color: $primary-brown;
+        margin-bottom: 20px;
+      }
+  
+      textarea {
+        resize: vertical;
+        border: 2px solid $light-brown;
+        border-radius: 6px;
+        padding: 8px;
+        font-size: 14px;
+        color: $text-color;
+        background-color: $background;
+        transition: border-color 0.3s;
+  
+        &:focus {
+          outline: none;
+          border-color: $primary-brown;
+          box-shadow: 0 0 0 3px rgba($primary-brown, 0.2);
+        }
+  
+        &:disabled {
+          background-color: #f2f2f2;
+          cursor: not-allowed;
+        }
+      }
+  
+      input[type="checkbox"]:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+  
+      .modal-actions,
+      .text-end {
+        margin-top: 20px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+  
+        button {
+          padding: 10px 18px;
+          font-weight: bold;
+          border-radius: 6px;
+          border: none;
+          cursor: pointer;
+          transition: 0.3s ease;
+  
+          &.btn-secondary {
+            background-color: $light-brown;
+            color: $white;
+  
+            &:hover {
+              background-color: $primary-brown;
+            }
+          }
+  
+          &.btn-success {
+            background-color: $primary-brown;
+            color: $white;
+  
+            &:hover {
+              background-color: color.adjust($primary-brown, $lightness: -10%);
+            }
+          }
+        }
+      }
+    }
+  }
+  
+
+  .module-section {
+    margin-bottom: 25px;
+
+    table {
+      width: 100%;
+      min-width: 800px;
+      background: $white;
+      border-radius: 8px;
+      overflow: hidden;
+      border-collapse: collapse;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    }
+
+    th {
+      background: $primary-brown;
+      color: $white;
+      padding: 10px;
+    }
+
+    td {
+      text-align: center;
+      vertical-align: middle;
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+
+      textarea {
+        width: 100%;
+        resize: none;
+        border: 1px solid $light-brown;
+        border-radius: 4px;
+        padding: 6px;
+      }
+
+      input[type="checkbox"] {
+        transform: scale(1.2);
+        cursor: pointer;
+      }
+    }
+
+    tbody tr:hover {
+      background: color.adjust($primary-brown, $lightness: 30%);
+    }
+  }
+}
+:host {
+    display: block;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .dashboard-layout {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  
+    app-user-sidebar {
+      
+      flex-shrink: 0;
+      background-color: $dark-brown;
+      color: white;
+      height: 100%;
+      position: relative; // or fixed if you want it to stay on scroll
+      top: 0;
+    }
+  
+    .request-container {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 30px;
+      background-color: $background;
+      color: $text-color;
+      height: 100%;
+    }
+  }
+  
+  

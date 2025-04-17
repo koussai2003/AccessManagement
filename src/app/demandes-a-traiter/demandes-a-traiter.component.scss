@@ -1,0 +1,119 @@
+.dashboard-layout {
+    display: flex;
+    min-height: 100vh;
+    background-color: #F5EFE6;
+  }
+  
+  .dashboard-content {
+    flex-grow: 1;
+    padding: 2rem;
+    color: #2D2D2D;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  h2 {
+    color: #8B5E3B;
+    margin-bottom: 1.5rem;
+  }
+  
+  .request-card {
+    background-color: #FFFFFF;
+    border-left: 5px solid #C19A6B;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    padding: 1rem 1.5rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 6px;
+  
+    &:hover {
+      background-color: #F5EFE6;
+      border-left-color: #A57B56;
+    }
+  
+    p {
+      margin: 0.2rem 0;
+    }
+  }
+  
+  .no-requests {
+    background-color: #FFF3E0;
+    border: 1px solid #E0C3A9;
+    padding: 1rem;
+    border-radius: 6px;
+    color: #6A4028;
+    font-weight: bold;
+  }
+  
+  .modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(44, 30, 22, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99;
+  }
+  
+  .modal-box {
+    background-color: #FFFFFF;
+    width: 90%;
+    max-width: 1000px;
+    border-radius: 10px;
+    padding: 2rem;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+  }
+  
+  .module-section {
+    margin-top: 1.5rem;
+  
+    h4 {
+      color: #6A4028;
+      margin-bottom: 0.5rem;
+    }
+  
+    table {
+      width: 100%;
+      border-collapse: collapse;
+  
+      th, td {
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+      }
+  
+      th {
+        background-color: #8B5E3B;
+        color: #fff;
+      }
+    }
+  }
+  
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+  
+    button {
+      margin-left: 1rem;
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  
+    .btn-success {
+      background-color: #8B5E3B;
+      color: white;
+    }
+  
+    .btn-secondary {
+      background-color: #ccc;
+    }
+  }
+  

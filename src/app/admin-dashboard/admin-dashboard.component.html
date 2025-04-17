@@ -1,0 +1,20 @@
+<div class="admin-container">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h3>Admin Panel</h3>
+    <ul class="nav-links">
+      <li [ngClass]="{ active: isActive('users') }" (click)="navigateTo('users')">Manage Users</li>
+      <li [ngClass]="{ active: isActive('applications') }" (click)="navigateTo('applications')">Manage Applications</li>
+      <li [ngClass]="{ active: isActive('Requests') }" (click)="navigateTo('Requests')">View Requests</li>
+    </ul>
+    <div class="logout-wrapper">
+      <li class="logout" (click)="logout()">Logout</li>
+    </div>
+  </aside>
+  
+
+  <!-- Dynamic Content Loads Here -->
+  <main class="admin-content">
+    <router-outlet></router-outlet> <!-- ✅ Loads Manage Users / Manage Applications -->
+  </main>
+</div>

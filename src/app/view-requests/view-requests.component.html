@@ -1,0 +1,90 @@
+<div class="request-container">
+  <h2>Access Requests</h2>
+
+  <div class="filters">
+    <input type="text" placeholder="Search user or app..." [(ngModel)]="searchTerm" (input)="applyFilters()" />
+
+    <div class="dropdown-wrapper">
+      <select [(ngModel)]="sortOrder" (change)="applyDateAndSortFilters()">
+        <option value="newest">Newest First</option>
+        <option value="oldest">Oldest First</option>
+      </select>
+      <span class="dropdown-icon">&#9662;</span>
+    </div>
+    <div class="date-filter">
+      <label for="startDate">Début :</label>
+      <input id="startDate" type="date" [(ngModel)]="startDate" (change)="applyDateAndSortFilters()">
+    </div>
+    
+    <div class="date-filter">
+      <label for="endDate">Fin :</label>
+      <input id="endDate" type="date" [(ngModel)]="endDate" (change)="applyDateAndSortFilters()">
+    </div>
+    
+
+  </div>
+
+  <div *ngIf="requests.length === 0" class="no-requests">No matching requests found.</div>
+
+  <div *ngFor="let req of requests" class="request-card" (click)="openRequest(req)">
+    <div class="request-id">Dem{{ req.id }}</div>
+    <div class="request-details">
+      <p><strong>User:</strong> {{ req.userName }} ({{ req.userEmail }})</p>
+      <p><strong>Application:</strong> {{ req.applicationName }}</p>
+      <p><strong>Date:</strong> {{ req.submittedAt | date:'short' }}</p>
+      <p><strong>Status:</strong> {{ req.state }}</p>
+      <div class="meta-info">
+      <p><strong>Société:</strong> {{ req.societe }}</p>
+      <p><strong>Fonction:</strong> {{ req.fonction }}</p>
+      <p><strong>Direction:</strong> {{ req.direction }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-box animate-in" (click)="$event.stopPropagation()">
+      <h3>Request from {{ selectedRequest?.userName }} ({{ selectedRequest?.userEmail }})</h3>
+      <div class="user-meta">
+      <p><strong>Société:</strong> {{ selectedRequest?.societe }}</p>
+      <p><strong>Fonction:</strong> {{ selectedRequest?.fonction }}</p>
+      <p><strong>Direction:</strong> {{ selectedRequest?.direction }}</p>
+      </div>
+
+      <div class="module-section" *ngFor="let mod of parsedModules">
+        <h4>{{ mod.name }}</h4>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Fonction</th>
+              <th>Consultation</th>
+              <th>Création</th>
+              <th>Modification</th>
+              <th>Suppression</th>
+              <th>Validation</th>
+              <th>Commentaire</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let func of mod.functions">
+              <td>{{ func.name }}</td>
+              <td><input type="checkbox" [checked]="func.options.consultation" disabled></td>
+              <td><input type="checkbox" [checked]="func.options.creation" disabled></td>
+              <td><input type="checkbox" [checked]="func.options.modification" disabled></td>
+              <td><input type="checkbox" [checked]="func.options.suppression" disabled></td>
+              <td><input type="checkbox" [checked]="func.options.validation" disabled></td>
+              <td>{{ func.comment }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <textarea class="form-control mt-3" [(ngModel)]="adminComment" placeholder="Optional comment (on rejection)"></textarea>
+
+      <div class="text-end mt-3">
+        <button class="btn btn-danger" (click)="denyRequest(selectedRequest.id)">Reject</button>
+        <button class="btn btn-success ms-2" (click)="acceptRequest(selectedRequest.id)">Accept</button>
+      </div>
+    </div>
+  </div>
+</div>

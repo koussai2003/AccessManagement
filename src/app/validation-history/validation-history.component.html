@@ -1,0 +1,60 @@
+<div class="dashboard-layout">
+    <app-user-sidebar />
+  
+    <!-- Main content -->
+    <div class="validation-history-container">
+      <h2>My Validated Requests</h2>
+  
+      <div *ngIf="validations.length === 0" class="no-requests">
+        No validated requests yet.
+      </div>
+  
+      <div *ngFor="let v of validations" class="validation-card">
+        <div class="validation-id">Dem{{ v.request.id }}</div>
+        <div class="validation-details">
+          <p><strong>Application:</strong> {{ v.request.applicationName }}</p>
+          <p><strong>Submitted by:</strong> {{ v.request.userName }} ({{ v.request.userEmail }})</p>
+          <p><strong>Validated At:</strong> {{ v.validatedAt | date:'short' }}</p>
+  
+          <button class="btn" (click)="viewRequest(v.request)">View Request</button>
+        </div>
+      </div>
+    </div>
+  
+    <div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
+      <div class="modal-box" (click)="$event.stopPropagation()">
+        <h4>{{ selectedRequest?.applicationName }} - Permissions</h4>
+  
+        <div *ngFor="let mod of parsedModules" class="module-section">
+          <h5>{{ mod.name }}</h5>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Function</th>
+                <th>Consultation</th>
+                <th>Création</th>
+                <th>Modification</th>
+                <th>Suppression</th>
+                <th>Validation</th>
+                <th>Comment</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let func of mod.functions">
+                <td>{{ func.name }}</td>
+                <td><input type="checkbox" [checked]="func.options.consultation" disabled /></td>
+                <td><input type="checkbox" [checked]="func.options.creation" disabled /></td>
+                <td><input type="checkbox" [checked]="func.options.modification" disabled /></td>
+                <td><input type="checkbox" [checked]="func.options.suppression" disabled /></td>
+                <td><input type="checkbox" [checked]="func.options.validation" disabled /></td>
+                <td>{{ func.comment }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+  
+        <button class="btn btn-secondary mt-3" (click)="closeModal()">Close</button>
+      </div>
+    </div>
+  </div> 
+  

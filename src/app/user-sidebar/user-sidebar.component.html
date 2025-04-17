@@ -1,0 +1,13 @@
+<aside class="sidebar">
+  <h2 class="sidebar-title">User Dashboard</h2>
+  <ul class="nav-links">
+    <li [ngClass]="{ active: isActive('applications') }" (click)="navigateTo('applications')">Applications</li>
+    <li [ngClass]="{ active: isActive('history') }" (click)="navigateTo('history')">Request History</li>
+    <li [ngClass]="{ active: isActive('demandes-a-traiter') }" (click)="navigateTo('demandes-a-traiter')">Demandes à Traiter</li>
+    <li [ngClass]="{ active: isActive('validationHistory') }" (click)="navigateTo('validationHistory')">Validated Requests</li>
+    
+  </ul>
+  <div class="logout-wrapper">
+    <li class="logout" (click)="logout()">Logout</li>
+  </div>
+</aside>
