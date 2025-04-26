@@ -1,53 +1,89 @@
 <div class="app-layout">
-  <!-- Sidebar -->
   <app-user-sidebar />
-
-
   <div class="content">
-    <h2>Select an Application</h2>
-    <div class="app-grid">
-      <div class="app-card" *ngFor="let app of applications" (click)="openApplication(app)">
-        <img [src]="app.logoUrl" alt="{{ app.name }}" class="app-logo">
-        <h4 class="app-title">{{ app.name }}</h4>
+    <div class="content-header">
+      <h2>Select an Application</h2>
+      <p class="subtitle">Choose an application to request access permissions</p>
+      <div style="position: fixed; top: 20px; right: 20px; z-index: 1000;">
+        <app-notification-bell></app-notification-bell>
       </div>
-    </div>
-    <div class="modal-backdrop" *ngIf="showPermissionsModal" (click)="closePermissionsModal($event)">
-      <div class="modal-box animate-in" (click)="$event.stopPropagation()">
-        <h3>Permissions for {{ selectedApp?.name }}</h3>
-        <div class="module-section" *ngFor="let mod of modules">
-          <h4>{{ mod.name }}</h4>
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th>Fonction</th>
-                <th>Consultation</th>
-                <th>Création</th>
-                <th>Modification</th>
-                <th>Suppression</th>
-                <th>Validation</th>
-                <th>Commentaire</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let func of mod.functions">
-                <td>{{ func.name }}</td>
-                <td><input type="checkbox" [(ngModel)]="func.options.consultation"></td>
-                <td><input type="checkbox" [(ngModel)]="func.options.creation"></td>
-                <td><input type="checkbox" [(ngModel)]="func.options.modification"></td>
-                <td><input type="checkbox" [(ngModel)]="func.options.suppression"></td>
-                <td><input type="checkbox" [(ngModel)]="func.options.validation"></td>
-                <td><textarea class="form-control" [(ngModel)]="func.comment"></textarea></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="modal-actions">
-          <button (click)="closePermissionsModal($event)">Cancel</button>
-          <button (click)="submitRequest()">Send</button>
-        </div>
-      </div>
+      
     </div>
     
+    <div class="app-grid">
+      <div class="app-card" *ngFor="let app of applications" (click)="openApplication(app)">
+        <div class="app-card-content">
+          <div class="app-logo-container">
+            <img [src]="app.logoUrl" alt="{{ app.name }}" class="app-logo" onerror="this.src='assets/default-app-icon.svg'">
+          </div>
+          <h4 class="app-title">{{ app.name }}</h4>
+          <span class="app-description">{{ app.description || 'Application access request' }}</span>
+        </div>
+      </div>
+    </div>
 
+    <!-- Permissions Modal -->
+    <div class="modal-backdrop" *ngIf="showPermissionsModal" (click)="closePermissionsModal($event)">
+      <div class="modal-box" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Permissions Request for {{ selectedApp?.name }}</h3>
+          <button class="close-btn" (click)="closePermissionsModal($event)">
+            <svg viewBox="0 0 24 24">
+              <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+            </svg>
+          </button>
+        </div>
+        
+        
+        <div class="modal-body">
+          <div class="permissions-intro">
+            <p>Please select the permissions you need for each module. Provide comments if necessary.</p>
+          </div>
+          
+          <div class="module-section" *ngFor="let mod of modules; let i = index">
+            <div class="module-header" (click)="toggleModule(i)">
+              <h4>{{ mod.name }}</h4>
+              <svg class="module-toggle" [class.expanded]="moduleExpanded[i]" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
+              </svg>
+            </div>
+            
+            <div class="module-content" *ngIf="moduleExpanded[i]">
+              <div class="table-container">
+                <table class="permissions-table">
+                  <thead>
+                    <tr>
+                      <th>Function</th>
+                      <th>View</th>
+                      <th>Create</th>
+                      <th>Edit</th>
+                      <th>Delete</th>
+                      <th>Validate</th>
+                      <th>Comments</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let func of mod.functions">
+                      <td class="function-name">{{ func.name }}</td>
+                      <td><input type="checkbox" [(ngModel)]="func.options.consultation" class="permission-checkbox"></td>
+                      <td><input type="checkbox" [(ngModel)]="func.options.creation" class="permission-checkbox"></td>
+                      <td><input type="checkbox" [(ngModel)]="func.options.modification" class="permission-checkbox"></td>
+                      <td><input type="checkbox" [(ngModel)]="func.options.suppression" class="permission-checkbox"></td>
+                      <td><input type="checkbox" [(ngModel)]="func.options.validation" class="permission-checkbox"></td>
+                      <td><textarea [(ngModel)]="func.comment" placeholder="Add comments..."></textarea></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-actions">
+          <button class="btn btn-secondary" (click)="closePermissionsModal($event)">Cancel</button>
+          <button class="btn btn-primary" (click)="submitRequest()">Submit Request</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

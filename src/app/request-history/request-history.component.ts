@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { NotificationBellComponent } from '../notification/notification.component';
 import { UserSidebarComponent } from '../user-sidebar/user-sidebar.component';
 
 @Component({
   selector: 'app-request-history',
   standalone: true,
-  imports: [CommonModule, FormsModule,UserSidebarComponent],
+  imports: [CommonModule, FormsModule, UserSidebarComponent,NotificationBellComponent],
   templateUrl: './request-history.component.html',
   styleUrls: ['./request-history.component.scss']
 })
@@ -16,83 +17,89 @@ export class RequestHistoryComponent implements OnInit {
   selectedRequest: any = null;
   parsedModules: any[] = [];
   showModal = false;
-  isEditing = false;
-  editableRequest: any = null;
   isEditMode = false;
+  moduleExpanded: boolean[] = [];
 
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    const email = localStorage.getItem('email');
-    if (email) {
-      this.http.get<any[]>(`http://localhost:5235/api/user/request/history/${email}`).subscribe({
-        next: (data) => this.requests = data,
-        error: (err) => console.error('Failed to load history:', err)
-      });
-    }
+    this.loadRequests();
   }
+
   loadRequests() {
     const email = localStorage.getItem('email');
     if (email) {
-      this.http
-        .get<any[]>(`http://localhost:5235/api/user/request/history/${email}`)
+      this.http.get<any[]>(`http://localhost:5235/api/user/request/history/${email}`)
         .subscribe({
-          next: (data) => (this.requests = data),
-          error: (err) => console.error('Failed to load history:', err),
+          next: (data) => this.requests = data,
+          error: (err) => console.error('Failed to load history:', err)
         });
     }
   }
+
   openRequest(req: any) {
     this.isEditMode = false;
     this.selectedRequest = req;
     this.parsedModules = JSON.parse(req.modulesJson || '[]');
+    this.moduleExpanded = new Array(this.parsedModules.length).fill(true);
     this.showModal = true;
+  }
+
+  editRequest(req: any) {
+    this.isEditMode = true;
+    this.selectedRequest = req;
+    this.parsedModules = JSON.parse(req.modulesJson || '[]');
+    this.moduleExpanded = new Array(this.parsedModules.length).fill(true);
+    this.showModal = true;
+  }
+
+  toggleModule(index: number) {
+    this.moduleExpanded[index] = !this.moduleExpanded[index];
   }
 
   closeModal() {
     this.showModal = false;
     this.selectedRequest = null;
+    this.parsedModules = [];
   }
 
   canEdit(req: any): boolean {
     return req.state === 'Not viewed' && !req.validatedBy1;
   }
 
-  editRequest(req: any) {
-    this.isEditMode = true;
-    this.isEditing = true;
-    this.selectedRequest = this.editableRequest;
-    this.editableRequest = JSON.parse(JSON.stringify(req)); // deep copy to avoid live binding
-    this.parsedModules = JSON.parse(req.modulesJson || '[]');
-    this.showModal = true;
+  getStatusClass(status: string): string {
+    if (!status) return '';
+    
+    status = status.toLowerCase();
+    if (status.includes('approved')) return 'approved';
+    if (status.includes('rejected')) return 'rejected';
+    if (status.includes('pending') || status.includes('not viewed')) return 'pending';
+    if (status.includes('progress')) return 'in-progress';
+    return '';
   }
+
   saveEditedRequest() {
-    if (!this.editableRequest) {
-      console.error('No editable request selected');
+    if (!this.selectedRequest) {
+      console.error('No request selected');
       return;
     }
-  
+
     const updatedRequest = {
-      ...this.editableRequest,
-      modulesJson: JSON.stringify(this.parsedModules),
-      applicationName: this.editableRequest.applicationName
-      // Include other fields that might need updating
+      ...this.selectedRequest,
+      modulesJson: JSON.stringify(this.parsedModules)
     };
-  
-    this.http.put(`http://localhost:5235/api/user/request/${this.editableRequest.id}`, updatedRequest)
+
+    this.http.put(`http://localhost:5235/api/user/request/${this.selectedRequest.id}`, updatedRequest)
       .subscribe({
         next: () => {
           this.showModal = false;
-          this.isEditing = false;
-          this.editableRequest = null;
-          alert('Saved!');
-          this.loadRequests(); // Refresh the list
+          this.loadRequests();
+          alert('Request updated successfully!');
         },
         error: (err) => {
-          console.error('Failed to save changes:', err);
-          alert('An error occurred while saving the request.');
+          console.error('Failed to update request:', err);
+          alert('Error updating request. Please try again.');
         }
       });
   }
-  
 }

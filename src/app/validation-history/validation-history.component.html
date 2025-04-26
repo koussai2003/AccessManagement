@@ -1,60 +1,160 @@
 <div class="dashboard-layout">
-    <app-user-sidebar />
-  
-    <!-- Main content -->
-    <div class="validation-history-container">
-      <h2>My Validated Requests</h2>
-  
-      <div *ngIf="validations.length === 0" class="no-requests">
-        No validated requests yet.
-      </div>
-  
-      <div *ngFor="let v of validations" class="validation-card">
-        <div class="validation-id">Dem{{ v.request.id }}</div>
-        <div class="validation-details">
-          <p><strong>Application:</strong> {{ v.request.applicationName }}</p>
-          <p><strong>Submitted by:</strong> {{ v.request.userName }} ({{ v.request.userEmail }})</p>
-          <p><strong>Validated At:</strong> {{ v.validatedAt | date:'short' }}</p>
-  
-          <button class="btn" (click)="viewRequest(v.request)">View Request</button>
+  <app-user-sidebar></app-user-sidebar>
+  <div style="position: fixed; top: 20px; right: 20px; z-index: 1000;">
+    <app-notification-bell></app-notification-bell>
+  </div>
+  <div class="content">
+    <div class="content-header">
+      <h2>Validation History</h2>
+      <p class="subtitle">Review requests you've previously validated</p>
+    </div>
+
+    <div *ngIf="validations.length === 0" class="empty-state">
+      <svg viewBox="0 0 24 24" class="empty-icon">
+        <path fill="currentColor" d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,10.5A1.5,1.5 0 0,0 10.5,12A1.5,1.5 0 0,0 12,13.5A1.5,1.5 0 0,0 13.5,12A1.5,1.5 0 0,0 12,10.5M7.5,10.5A1.5,1.5 0 0,0 6,12A1.5,1.5 0 0,0 7.5,13.5A1.5,1.5 0 0,0 9,12A1.5,1.5 0 0,0 7.5,10.5M16.5,10.5A1.5,1.5 0 0,0 15,12A1.5,1.5 0 0,0 16.5,13.5A1.5,1.5 0 0,0 18,12A1.5,1.5 0 0,0 16.5,10.5Z" />
+      </svg>
+      <h3>No validation history yet</h3>
+      <p>You haven't validated any requests yet. Approved requests will appear here.</p>
+    </div>
+
+    <div class="validation-list">
+      <div *ngFor="let v of validations" class="validation-card" [class.rejected]="v.isRejection">
+        <div class="validation-header">
+          <div class="user-info">
+            <div class="user-avatar">{{ getUserInitials(v.request.userName) }}</div>
+            <div>
+              <h4>{{ v.request.userName }}</h4>
+              <span class="user-email">{{ v.request.userEmail }}</span>
+              <span class="validation-status" [class.rejected]="v.isRejection">
+                {{ v.isRejection ? 'Rejected' : 'Approved' }}
+              </span>
+            </div>
+          </div>
+          <span class="validation-date">{{ v.validatedAt | date:'shortDate' }}</span>
+        </div>
+        
+        <div class="validation-body">
+          <div class="validation-detail">
+            <svg viewBox="0 0 24 24" class="detail-icon">
+              <path fill="currentColor" d="M12,3L2,12H5V20H19V12H22L12,3M12,7.7L16,11.2V18H13V14H11V18H8V11.2L12,7.7Z" />
+            </svg>
+            <span>{{ v.request.applicationName }}</span>
+          </div>
+          
+          <div *ngIf="v.isRejection" class="rejection-comment">
+            <strong>Rejection reason</strong>
+            {{ v.comment || 'No reason provided'}}
+          </div>
+          
+          <div *ngIf="!v.isRejection && v.comment" class="validation-comment">
+            <strong>Validation note</strong>
+            {{ v.comment }}
+          </div>
+        </div>
+
+        <div class="validation-actions">
+          <button class="btn btn-view" (click)="viewRequest(v.request); selectedComment = v.comment">
+            <svg viewBox="0 0 24 24">
+              <path fill="currentColor" d="M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9M12,4.5C17,4.5 21.27,7.61 23,12C21.27,16.39 17,19.5 12,19.5C7,19.5 2.73,16.39 1,12C2.73,7.61 7,4.5 12,4.5M3.18,12C4.83,15.36 8.24,17.5 12,17.5C15.76,17.5 19.17,15.36 20.82,12C19.17,8.64 15.76,6.5 12,6.5C8.24,6.5 4.83,8.64 3.18,12Z" />
+            </svg>
+            View Details
+          </button>
         </div>
       </div>
     </div>
-  
+
+    <!-- Validation Details Modal -->
     <div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
       <div class="modal-box" (click)="$event.stopPropagation()">
-        <h4>{{ selectedRequest?.applicationName }} - Permissions</h4>
-  
-        <div *ngFor="let mod of parsedModules" class="module-section">
-          <h5>{{ mod.name }}</h5>
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Function</th>
-                <th>Consultation</th>
-                <th>Création</th>
-                <th>Modification</th>
-                <th>Suppression</th>
-                <th>Validation</th>
-                <th>Comment</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let func of mod.functions">
-                <td>{{ func.name }}</td>
-                <td><input type="checkbox" [checked]="func.options.consultation" disabled /></td>
-                <td><input type="checkbox" [checked]="func.options.creation" disabled /></td>
-                <td><input type="checkbox" [checked]="func.options.modification" disabled /></td>
-                <td><input type="checkbox" [checked]="func.options.suppression" disabled /></td>
-                <td><input type="checkbox" [checked]="func.options.validation" disabled /></td>
-                <td>{{ func.comment }}</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="modal-header">
+          <h3>Validation Details</h3>
+          <button class="close-btn" (click)="closeModal()">
+            <svg viewBox="0 0 24 24">
+              <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+            </svg>
+          </button>
         </div>
-  
-        <button class="btn btn-secondary mt-3" (click)="closeModal()">Close</button>
+        
+        <div class="modal-body">
+          <div class="validation-summary">
+            <div class="user-summary">
+              <div class="user-avatar large">{{ getUserInitials(selectedRequest?.userName) }}</div>
+              <div>
+                <h4>{{ selectedRequest?.userName }}</h4>
+                <span class="user-email">{{ selectedRequest?.userEmail }}</span>
+              </div>
+            </div>
+            
+            <div class="summary-grid">
+              <div class="summary-item">
+                <label>Application</label>
+                <span>{{ selectedRequest?.applicationName }}</span>
+              </div>
+              <div class="summary-item">
+                <label>Request ID</label>
+                <span>#{{ selectedRequest?.id }}</span>
+              </div>
+              <div class="summary-item">
+                <label>Submitted</label>
+                <span>{{ selectedRequest?.submittedAt | date:'medium' }}</span>
+              </div>
+            </div>
+            
+            <div class="validation-comment-section" *ngIf="selectedComment">
+              <h4>{{ selectedRequest.state.includes('Rejected') ? 'Rejection Reason' : 'Validation Note' }}</h4>
+              <div class="comment-box" [class.rejected-comment]="selectedRequest.state.includes('Rejected')">
+                {{ selectedComment }}
+              </div>
+            </div>
+          </div>
+          
+          <div class="permissions-section">
+            <h4>Approved Permissions</h4>
+            
+            <div class="module-accordion" *ngFor="let mod of parsedModules; let i = index">
+              <div class="module-header" (click)="toggleModule(i)">
+                <h5>{{ mod.name }}</h5>
+                <svg class="module-toggle" [class.expanded]="moduleExpanded[i]" viewBox="0 0 24 24">
+                  <path fill="currentColor" d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
+                </svg>
+              </div>
+              
+              <div class="module-content" *ngIf="moduleExpanded[i]">
+                <div class="table-container">
+                  <table class="permissions-table">
+                    <thead>
+                      <tr>
+                        <th>Function</th>
+                        <th>View</th>
+                        <th>Create</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                        <th>Validate</th>
+                        <th>Comments</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let func of mod.functions">
+                        <td class="function-name">{{ func.name }}</td>
+                        <td><input type="checkbox" [checked]="func.options.consultation" disabled class="permission-checkbox"></td>
+                        <td><input type="checkbox" [checked]="func.options.creation" disabled class="permission-checkbox"></td>
+                        <td><input type="checkbox" [checked]="func.options.modification" disabled class="permission-checkbox"></td>
+                        <td><input type="checkbox" [checked]="func.options.suppression" disabled class="permission-checkbox"></td>
+                        <td><input type="checkbox" [checked]="func.options.validation" disabled class="permission-checkbox"></td>
+                        <td class="comment-cell">{{ func.comment || '-' }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-actions">
+          <button class="btn btn-close" (click)="closeModal()">Close</button>
+        </div>
       </div>
     </div>
-  </div> 
-  
+  </div>
+</div>

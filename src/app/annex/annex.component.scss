@@ -1,74 +1,192 @@
 @use "sass:color";
 
-// Theme Variables (reused)
-$primary-brown: #8B5E3B;
-$dark-brown: #6A4028;
-$light-brown: #C19A6B;
-$background: #F5EFE6;
-$text-color: #2D2D2D;
-$hover-light: #A57B56;
-$white: #fff;
+// Color Variables (matching your theme)
+$primary-color: #4a6fa5;
+$secondary-color: #6c8fc7;
+$dark-color: #2c3e50;
+$light-color: #f8f9fa;
+$text-color: #333;
+$white: #ffffff;
+$gray-light: #f5f7fa;
+$gray-medium: #e1e5eb;
+$gray-dark: #6c757d;
+$success-color: #28a745;
+$error-color: #dc3545;
+$hover-color: rgba(74, 111, 165, 0.1);
 
-.annex-wrapper {
-  height: 100vh;
+.password-reset-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: $background;
-  color: $text-color;
-  font-family: 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  background-color: $gray-light;
+  padding: 2rem;
+}
 
-  .annex-box {
-    background-color: $white;
-    border: 1px solid $light-brown;
-    border-radius: 10px;
-    padding: 40px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    width: 100%;
-    max-width: 500px;
-    text-align: center;
+.password-reset-card {
+  background: $white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+  animation: fadeIn 0.5s ease-out;
 
-    h2 {
-      color: $primary-brown;
-      margin-bottom: 10px;
-      font-size: 24px;
+  .logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1.5rem;
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 1rem;
+      color: $primary-color;
     }
 
-    p {
-      margin-bottom: 25px;
-      color: $text-color;
-      font-size: 16px;
+    .password-reset-title {
+      color: $dark-color;
+      font-size: 1.75rem;
+      margin: 0;
+      font-weight: 600;
     }
+  }
 
-    input.form-control {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1px solid $light-brown;
-      border-radius: 6px;
-      font-size: 16px;
-      margin-bottom: 20px;
+  .password-reset-subtitle {
+    color: $gray-dark;
+    margin-bottom: 2rem;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
 
-      &:focus {
-        border-color: $primary-brown;
-        outline: none;
-        box-shadow: 0 0 0 3px color.adjust($primary-brown, $lightness: 30%);
+  .password-reset-form {
+    .form-group {
+      margin-bottom: 1.5rem;
+      text-align: left;
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: $dark-color;
+        font-size: 0.9375rem;
+      }
+
+      .input-container {
+        position: relative;
+
+        input {
+          width: 100%;
+          padding: 0.875rem 1rem 0.875rem 2.5rem;
+          border: 1px solid $gray-medium;
+          border-radius: 8px;
+          font-size: 0.9375rem;
+          transition: all 0.3s ease;
+
+          &:focus {
+            border-color: $primary-color;
+            box-shadow: 0 0 0 3px rgba($primary-color, 0.2);
+            outline: none;
+          }
+
+          &::placeholder {
+            color: $gray-dark;
+          }
+        }
+
+        .input-icon {
+          position: absolute;
+          left: 1rem;
+          top: 50%;
+          transform: translateY(-50%);
+          color: $gray-dark;
+          font-size: 1.25rem;
+        }
       }
     }
 
-    .btn-change {
-      background-color: $primary-brown;
-      color: white;
-      padding: 12px 24px;
+    .password-strength {
+      margin-bottom: 1.5rem;
+      text-align: left;
+
+      .strength-meter {
+        display: flex;
+        gap: 0.25rem;
+        margin-bottom: 0.5rem;
+
+        .strength-segment {
+          height: 4px;
+          flex: 1;
+          background: $gray-medium;
+          border-radius: 2px;
+          transition: all 0.3s ease;
+
+          &.active {
+            background: $success-color;
+          }
+        }
+      }
+
+      .strength-text {
+        font-size: 0.8125rem;
+        color: $gray-dark;
+      }
+    }
+
+    .submit-button {
+      width: 100%;
+      padding: 0.875rem;
+      background: $primary-color;
+      color: $white;
       border: none;
-      border-radius: 6px;
-      font-weight: bold;
-      font-size: 16px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
 
       &:hover {
-        background-color: $hover-light;
+        background: darken($primary-color, 5%);
+      }
+
+      &:disabled {
+        background: $gray-medium;
+        cursor: not-allowed;
+      }
+
+      mat-spinner {
+        ::ng-deep circle {
+          stroke: $white;
+        }
       }
     }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 576px) {
+  .password-reset-container {
+    padding: 1rem;
+  }
+
+  .password-reset-card {
+    padding: 1.5rem;
   }
 }

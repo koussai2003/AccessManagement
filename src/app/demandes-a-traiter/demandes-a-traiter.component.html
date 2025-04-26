@@ -1,61 +1,184 @@
 <div class="dashboard-layout">
   <app-user-sidebar></app-user-sidebar>
 
-  <div class="dashboard-content">
-    <h2>Demandes à Traiter</h2>
-
-    <div *ngIf="requests.length === 0" class="no-requests">No requests to review.</div>
-
-    <div *ngFor="let req of requests" class="request-card" (click)="openRequest(req)">
-      <p><strong>Demande:</strong> {{ req.userName }} ({{ req.userEmail }})</p>
-      <p><strong>Application:</strong> {{ req.applicationName }}</p>
-      <p><strong>Date:</strong> {{ req.submittedAt | date:'short' }}</p>
-      <p><strong>État:</strong> {{ req.state }}</p>
+  <div class="content">
+    <div class="content-header">
+      <div style="position: fixed; top: 20px; right: 20px; z-index: 1000;">
+        <app-notification-bell></app-notification-bell>
+      </div>
+      <h2>Requests to Process</h2>
+      <p class="subtitle">Review and validate pending access requests</p>
     </div>
 
-    <!-- Modal -->
-    <div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
-      <div class="modal-box" (click)="$event.stopPropagation()">
-        <h3>Review Request</h3>
-        <p><strong>User:</strong> {{ selectedRequest?.userName }} ({{ selectedRequest?.userEmail }})</p>
-        <p><strong>Application:</strong> {{ selectedRequest?.applicationName }}</p>
+    <div *ngIf="requests.length === 0" class="empty-state">
+      <svg viewBox="0 0 24 24" class="empty-icon">
+        <path fill="currentColor" d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,10.5A1.5,1.5 0 0,0 10.5,12A1.5,1.5 0 0,0 12,13.5A1.5,1.5 0 0,0 13.5,12A1.5,1.5 0 0,0 12,10.5M7.5,10.5A1.5,1.5 0 0,0 6,12A1.5,1.5 0 0,0 7.5,13.5A1.5,1.5 0 0,0 9,12A1.5,1.5 0 0,0 7.5,10.5M16.5,10.5A1.5,1.5 0 0,0 15,12A1.5,1.5 0 0,0 16.5,13.5A1.5,1.5 0 0,0 18,12A1.5,1.5 0 0,0 16.5,10.5Z" />
+      </svg>
+      <h3>No pending requests</h3>
+      <p>There are currently no requests waiting for your validation.</p>
+    </div>
 
-        <div class="module-section" *ngFor="let mod of parsedModules">
-          <h4>{{ mod.name }}</h4>
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th>Fonction</th>
-                <th>Consultation</th>
-                <th>Création</th>
-                <th>Modification</th>
-                <th>Suppression</th>
-                <th>Validation</th>
-                <th>Commentaire</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let func of mod.functions">
-                <td>{{ func.name }}</td>
-                <td><input type="checkbox" [checked]="func.options.consultation" disabled></td>
-                <td><input type="checkbox" [checked]="func.options.creation" disabled></td>
-                <td><input type="checkbox" [checked]="func.options.modification" disabled></td>
-                <td><input type="checkbox" [checked]="func.options.suppression" disabled></td>
-                <td><input type="checkbox" [checked]="func.options.validation" disabled></td>
-                <td>{{ func.comment }}</td>
-              </tr>
-            </tbody>
-          </table>
+    <div class="request-list">
+      <div *ngFor="let req of requests" class="request-card" (click)="openRequest(req)">
+        <div class="request-header">
+          <div class="user-info">
+            <div class="user-avatar">{{ getUserInitials(req.userName) }}</div>
+            <div>
+              <h4>{{ req.userName }}</h4>
+              <span class="user-email">{{ req.userEmail }}</span>
+            </div>
+          </div>
+          <span class="request-date">{{ req.submittedAt | date:'shortDate' }}</span>
         </div>
-
-        <div class="text-end mt-3">
-          <button class="btn btn-success" [disabled]="isSubmitting" (click)="validateRequest(selectedRequest.id)">
-            <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1"></span>
-            Valider
-          </button>
-          <button class="btn btn-secondary ms-2" (click)="closeModal()">Fermer</button>
+        
+        <div class="request-body">
+          <div class="request-detail">
+            <svg viewBox="0 0 24 24" class="detail-icon">
+              <path fill="currentColor" d="M12,3L2,12H5V20H19V12H22L12,3M12,7.7L16,11.2V18H13V14H11V18H8V11.2L12,7.7Z" />
+            </svg>
+            <span>{{ req.applicationName }}</span>
+          </div>
+          <div class="request-detail">
+            <svg viewBox="0 0 24 24" class="detail-icon">
+              <path fill="currentColor" d="M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
+            </svg>
+            <span>{{ req.state }}</span>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- Review Modal -->
+    <div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
+      <div class="modal-box" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Review Access Request</h3>
+          <button class="close-btn" (click)="closeModal()">
+            <svg viewBox="0 0 24 24">
+              <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+            </svg>
+          </button>
+        </div>
+        
+        <div class="modal-body">
+          <div class="request-summary">
+            <div class="user-summary">
+              <div class="user-avatar large">{{ getUserInitials(selectedRequest?.userName) }}</div>
+              <div>
+                <h4>{{ selectedRequest?.userName }}</h4>
+                <span class="user-email">{{ selectedRequest?.userEmail }}</span>
+              </div>
+            </div>
+            
+            <div class="summary-grid">
+              <div class="summary-item">
+                <label>Application</label>
+                <span>{{ selectedRequest?.applicationName }}</span>
+              </div>
+              <div class="summary-item">
+                <label>Submitted</label>
+                <span>{{ selectedRequest?.submittedAt | date:'medium' }}</span>
+              </div>
+              <div class="summary-item">
+                <label>Status</label>
+                <span class="status-badge">{{ selectedRequest?.state }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="permissions-section">
+            <h4>Requested Permissions</h4>
+            
+            <div class="module-accordion" *ngFor="let mod of parsedModules; let i = index">
+              <div class="module-header" (click)="toggleModule(i)">
+                <h5>{{ mod.name }}</h5>
+                <svg class="module-toggle" [class.expanded]="moduleExpanded[i]" viewBox="0 0 24 24">
+                  <path fill="currentColor" d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
+                </svg>
+              </div>
+              
+              <div class="module-content" *ngIf="moduleExpanded[i]">
+                <div class="table-container">
+                  <table class="permissions-table">
+                    <thead>
+                      <tr>
+                        <th>Function</th>
+                        <th>View</th>
+                        <th>Create</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                        <th>Validate</th>
+                        <th>Comments</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let func of mod.functions">
+                        <td class="function-name">{{ func.name }}</td>
+                        <td><input type="checkbox" [checked]="func.options.consultation" disabled class="permission-checkbox"></td>
+                        <td><input type="checkbox" [checked]="func.options.creation" disabled class="permission-checkbox"></td>
+                        <td><input type="checkbox" [checked]="func.options.modification" disabled class="permission-checkbox"></td>
+                        <td><input type="checkbox" [checked]="func.options.suppression" disabled class="permission-checkbox"></td>
+                        <td><input type="checkbox" [checked]="func.options.validation" disabled class="permission-checkbox"></td>
+                        <td class="comment-cell">{{ func.comment || '-' }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-actions">
+          <div class="action-buttons">
+            <button class="btn btn-reject" [disabled]="isSubmitting" (click)="rejectRequest(selectedRequest.id)">
+              <span *ngIf="isRejecting" class="spinner"></span>
+              {{ isRejecting ? 'Rejecting...' : 'Reject Request' }}
+            </button>
+            
+            <button class="btn btn-validate" [disabled]="isSubmitting" (click)="validateRequest(selectedRequest.id)">
+              <span *ngIf="isSubmitting" class="spinner"></span>
+              {{ isSubmitting ? 'Validating...' : 'Validate Request' }}
+            </button>
+            
+            <button class="btn btn-close" (click)="closeModal()">Close</button>
+          </div>
+          
+          <!-- Rejection comment section -->
+          <div class="rejection-comment-box" *ngIf="showRejectionComment">
+            <div class="comment-header">
+              <h4>Add Rejection Reason</h4>
+              <small>(Required)</small>
+            </div>
+            <textarea 
+              [(ngModel)]="rejectionComment" 
+              placeholder="Please provide a reason for rejection..."
+              class="comment-textarea">
+            </textarea>
+            <div class="comment-footer">
+              <button class="btn btn-outline" (click)="cancelRejection()">Cancel</button>
+              <button class="btn btn-danger" (click)="confirmRejection(selectedRequest.id)">
+                Confirm Rejection
+              </button>
+            </div>
+          </div>
+          <div class="validation-comment-box" *ngIf="showValidationComment">
+            <div class="comment-header">
+              <h4>Add Validation Comment</h4>
+              <small>(Optional)</small>
+            </div>
+            <textarea 
+              [(ngModel)]="validationComment" 
+              placeholder="You can add an optional comment..."
+              class="comment-textarea">
+            </textarea>
+            <div class="comment-footer">
+              <button class="btn btn-outline" (click)="cancelValidation()">Cancel</button>
+              <button class="btn btn-success" (click)="confirmValidation(selectedRequest.id)">
+                Confirm Validation
+              </button>
+            </div>
+          </div>
+        </div>
   </div>
 </div>

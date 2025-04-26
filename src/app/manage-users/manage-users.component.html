@@ -1,129 +1,269 @@
-<div class="user-manager container mt-5">
-  <h2>Manage Users</h2>
-    <div class="card p-4 mb-5 shadow-sm">
-      <h4>Add New User</h4>
-      <div class="row g-3">
-        <div class="col-md-3"><input class="form-control" placeholder="Nom" [(ngModel)]="newUser.name"></div>
-        <div class="col-md-3"><input class="form-control" placeholder="Prenom" [(ngModel)]="newUser.lastName"></div>
-        <div class="col-md-3"><input class="form-control" placeholder="Email" [(ngModel)]="newUser.email" type="email"></div>
-        <div class="col-md-3"><input class="form-control" placeholder="Password" [(ngModel)]="newUser.password" type="password"></div>
-        
-        <div class="col-md-3"><input class="form-control" placeholder="Fonction" [(ngModel)]="newUser.fonction"></div>
-        <div class="col-md-3">
-          <select class="form-control" [(ngModel)]="newUser.societe">
-            <option value="" disabled selected hidden>Sélectionner Société</option>
-            <option *ngFor="let societe of societes" [value]="societe">{{ societe }}</option>
-          </select>
-          
-        </div>
-        
-        <div class="col-md-3"><input class="form-control" placeholder="Direction" [(ngModel)]="newUser.direction"></div>
-        
-        <div class="col-md-3">
-          <select class="form-control" [(ngModel)]="newUser.statut">
-            <option value="actif">Actif</option>
-            <option value="inactif">Inactif</option>
-          </select>
-        </div>
-  
-        <div class="col-md-4"><input class="form-control" type="email" placeholder="Validateur 1 (required)" [(ngModel)]="newUser.validateur1" required></div>
-        <div class="col-md-4"><input class="form-control" type="email" placeholder="Validateur 2 (optional)" [(ngModel)]="newUser.validateur2"></div>
-        <div class="col-md-4"><input class="form-control" type="email" placeholder="Validateur 3 (optional)" [(ngModel)]="newUser.validateur3"></div>
-  
-        <div class="col-md-3">
-          <select class="form-control" [(ngModel)]="newUser.role">
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-          </select>
-        </div>
-  
-        <div class="col-md-2 d-grid">
-          <button class="btn btn-success" [disabled]="!isValidNewValidateur1()" (click)="addUser()">Add</button>
-        </div>
-      </div>
+<div class="user-management-container">
+  <div class="page-header">
+    <h2><i class="fas fa-users"></i> User Management</h2>
+    <div class="header-actions">
+      <button class="btn btn-refresh" (click)="loadUsers()">
+        <i class="fas fa-sync-alt"></i> Refresh
+      </button>
     </div>
-  
-  
+  </div>
+
+  <!-- Add User Card -->
+  <div class="management-card">
+    <div class="card-header">
+      <h3><i class="fas fa-user-plus"></i> Add New User</h3>
+    </div>
+    <div class="card-body">
+      <form class="user-form">
+        <div class="form-grid">
+          <!-- Row 1 -->
+          <div class="form-group">
+            <label>First Name</label>
+            <input class="form-control" placeholder="First Name" [(ngModel)]="newUser.name" name="firstName" required>
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input class="form-control" placeholder="Last Name" [(ngModel)]="newUser.lastName" name="lastName" required>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input class="form-control" placeholder="Email" [(ngModel)]="newUser.email" type="email" name="email" required>
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <div class="password-input">
+              <input class="form-control" placeholder="Password" [(ngModel)]="newUser.password" [type]="passwordFieldTypes['newPassword']" name="password" required>
+              <i class="fas fa-eye password-toggle" (click)="togglePasswordVisibility('newPassword')"></i>
+            </div>
+          </div>
+
+          <!-- Row 2 -->
+          <div class="form-group">
+            <label>Function</label>
+            <input class="form-control" placeholder="Function" [(ngModel)]="newUser.fonction" name="fonction" required>
+          </div>
+          <div class="form-group">
+            <label>Company</label>
+            <select class="form-control" [(ngModel)]="newUser.societe" name="societe" required>
+              <option value="" disabled selected>Select Company</option>
+              <option *ngFor="let societe of societes" [value]="societe">{{ societe }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Department</label>
+            <input class="form-control" placeholder="Direction" [(ngModel)]="newUser.direction" name="direction" required>
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select class="form-control" [(ngModel)]="newUser.statut" name="statut">
+              <option value="actif">Active</option>
+              <option value="inactif">Inactive</option>
+            </select>
+          </div>
+
+          <!-- Row 3 -->
+          <div class="form-group">
+            <label>Validator 1 <span class="required">*</span></label>
+            <input class="form-control" type="email" placeholder="Validator 1" [(ngModel)]="newUser.validateur1" name="validateur1" required>
+            <div class="validation-feedback" *ngIf="newUser.validateur1 && !isValidNewValidateur1()">
+              <i class="fas fa-exclamation-circle"></i> Must be a registered user email
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Validator 2</label>
+            <input class="form-control" type="email" placeholder="Validator 2" [(ngModel)]="newUser.validateur2" name="validateur2">
+          </div>
+          <div class="form-group">
+            <label>Validator 3</label>
+            <input class="form-control" type="email" placeholder="Validator 3" [(ngModel)]="newUser.validateur3" name="validateur3">
+          </div>
+          <div class="form-group">
+            <label>Role</label>
+            <select class="form-control" [(ngModel)]="newUser.role" name="role">
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-primary" 
+                  [disabled]="!isValidNewUser()" 
+                  (click)="addUser()">
+            <i class="fas fa-plus"></i> Add User
+          </button>
+          <button class="btn btn-secondary" type="button" (click)="resetNewUserForm()">
+            <i class="fas fa-undo"></i> Reset
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Users Table -->
-  <div class="table-responsive">
-      <table class="table table-striped mt-3">
-          <thead class="table-dark">
-              <tr>
-                  <th>ID</th>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Role</th>
-                  <th>Actions</th>
-              </tr>
+  <div class="management-card">
+    <div class="card-header">
+      <h3><i class="fas fa-users-cog"></i> User List</h3>
+      <div class="table-controls">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Search users..." [(ngModel)]="searchTerm" (input)="filterUsers()">
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="user-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Company</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
           </thead>
           <tbody>
-              <tr *ngFor="let user of users">
-                  <td>{{ user.id }}</td>
-                  <td>{{ user.name }}</td>
-                  <td>{{ user.email }}</td>
-                  <td>
-                      <span class="badge" [ngClass]="user.role === 'admin' ? 'bg-danger' : 'bg-primary'">
-                          {{ user.role }}
-                      </span>
-                  </td>
-                  <td>
-                      <button class="btn btn-warning btn-sm me-2" (click)="editUser(user)">
-                          <i class="fa fa-edit"></i> Edit
-                      </button>
-                      <button class="btn btn-danger btn-sm" (click)="deleteUser(user.id)" [disabled]="user.id === loggedInUserId">
-                          <i class="fa fa-trash"></i> Delete
-                      </button>
-                  </td>
-              </tr>
+            <tr *ngFor="let user of filteredUsers">
+              <td>{{ user.id }}</td>
+              <td>{{ user.name }} {{ user.lastName }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.societe }}</td>
+              <td>
+                <span class="role-badge" [ngClass]="{
+                  'role-admin': user.role === 'admin',
+                  'role-user': user.role === 'user'
+                }">
+                  {{ user.role | titlecase }}
+                </span>
+              </td>
+              <td>
+                <span class="status-badge" [ngClass]="{
+                  'status-active': user.statut === 'actif',
+                  'status-inactive': user.statut === 'inactif'
+                }">
+                  {{ user.statut | titlecase }}
+                </span>
+              </td>
+              <td class="actions">
+                <button class="btn-action btn-edit" (click)="editUser(user)">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn-action btn-delete" 
+                        (click)="deleteUser(user.id)" 
+                        [disabled]="user.id === loggedInUserId">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </td>
+            </tr>
           </tbody>
-      </table>
-  </div>
-
-  <!-- Edit User Form -->
-  <!-- 🔸 EDIT USER BLOCK -->
-<div class="card p-4 mt-4 shadow-sm" *ngIf="editingUser">
-    <h4>Edit User</h4>
-    <div class="row g-3">
-      <div class="col-md-3"><input class="form-control" placeholder="Nom" [(ngModel)]="editingUser.name"></div>
-      <div class="col-md-3"><input class="form-control" placeholder="Prenom" [(ngModel)]="editingUser.lastName"></div>
-      <div class="col-md-3"><input class="form-control" placeholder="Email" [(ngModel)]="editingUser.email"></div>
-      <div class="col-md-3"><input class="form-control" placeholder="New Password (optional)" [(ngModel)]="editingUser.password" type="password"></div>
-      
-      <div class="col-md-3"><input class="form-control" placeholder="Fonction" [(ngModel)]="editingUser.fonction"></div>
-      <div class="col-md-3">
-        <select class="form-control" [(ngModel)]="editingUser.societe">
-          <option value="" disabled selected hidden>Sélectionner Société</option>
-          <option *ngFor="let societe of societes" [value]="societe">{{ societe }}</option>
-        </select>
-        
+        </table>
       </div>
-      
-      <div class="col-md-3"><input class="form-control" placeholder="Direction" [(ngModel)]="editingUser.direction"></div>
-      
-      <div class="col-md-3">
-        <select class="form-control" [(ngModel)]="editingUser.statut">
-          <option value="actif">Actif</option>
-          <option value="inactif">Inactif</option>
-        </select>
-      </div>
-  
-      <div class="col-md-4"><input class="form-control" type="email" placeholder="Validateur 1" [(ngModel)]="editingUser.validateur1"></div>
-      <div class="col-md-4"><input class="form-control" type="email" placeholder="Validateur 2" [(ngModel)]="editingUser.validateur2"></div>
-      <div class="col-md-4"><input class="form-control" type="email" placeholder="Validateur 3" [(ngModel)]="editingUser.validateur3"></div>
-  
-      <div class="col-md-3">
-        <select class="form-control" [(ngModel)]="editingUser.role">
-          <option value="user">User</option>
-          <option value="admin">Admin</option>
-        </select>
-      </div>
-  
-      <div class="col-md-3 d-grid">
-        <button class="btn btn-success" [disabled]="!isValidEditValidateur1()" (click)="updateUser()">Save</button>
-        <button class="btn btn-secondary mt-2" (click)="cancelEdit()">Cancel</button>
+      <div class="table-footer">
+        <div class="pagination-info">
+          Showing {{ filteredUsers.length }} of {{ users.length }} users
+        </div>
       </div>
     </div>
   </div>
-  
+
+  <!-- Edit User Modal -->
+  <div class="modal-overlay" *ngIf="editingUser">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3><i class="fas fa-user-edit"></i> Edit User</h3>
+        <button class="btn-close" (click)="cancelEdit()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="user-form">
+          <div class="form-grid">
+            <!-- Same fields as add user form but bound to editingUser -->
+            <!-- Row 1 -->
+            <div class="form-group">
+              <label>First Name</label>
+              <input class="form-control" placeholder="First Name" [(ngModel)]="editingUser.name" name="editFirstName" required>
+            </div>
+            <div class="form-group">
+              <label>Last Name</label>
+              <input class="form-control" placeholder="Last Name" [(ngModel)]="editingUser.lastName" name="editLastName" required>
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input class="form-control" placeholder="Email" [(ngModel)]="editingUser.email" type="email" name="editEmail" required>
+            </div>
+            <div class="form-group">
+              <label>New Password</label>
+              <div class="password-input">
+                <input class="form-control" placeholder="Leave blank to keep current" [(ngModel)]="editingUser.password" [type]="passwordFieldTypes['editPassword']" name="editPassword">
+                <i class="fas fa-eye password-toggle" (click)="togglePasswordVisibility('editPassword')"></i>
+              </div>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="form-group">
+              <label>Function</label>
+              <input class="form-control" placeholder="Function" [(ngModel)]="editingUser.fonction" name="editFonction" required>
+            </div>
+            <div class="form-group">
+              <label>Company</label>
+              <select class="form-control" [(ngModel)]="editingUser.societe" name="editSociete" required>
+                <option value="" disabled selected>Select Company</option>
+                <option *ngFor="let societe of societes" [value]="societe">{{ societe }}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Department</label>
+              <input class="form-control" placeholder="Direction" [(ngModel)]="editingUser.direction" name="editDirection" required>
+            </div>
+            <div class="form-group">
+              <label>Status</label>
+              <select class="form-control" [(ngModel)]="editingUser.statut" name="editStatut">
+                <option value="actif">Active</option>
+                <option value="inactif">Inactive</option>
+              </select>
+            </div>
+
+            <!-- Row 3 -->
+            <div class="form-group">
+              <label>Validator 1 <span class="required">*</span></label>
+              <input class="form-control" type="email" placeholder="Validator 1" [(ngModel)]="editingUser.validateur1" name="editValidateur1" required>
+              <div class="validation-feedback" *ngIf="editingUser.validateur1 && !isValidEditValidateur1()">
+                <i class="fas fa-exclamation-circle"></i> Must be a registered user email
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Validator 2</label>
+              <input class="form-control" type="email" placeholder="Validator 2" [(ngModel)]="editingUser.validateur2" name="editValidateur2">
+            </div>
+            <div class="form-group">
+              <label>Validator 3</label>
+              <input class="form-control" type="email" placeholder="Validator 3" [(ngModel)]="editingUser.validateur3" name="editValidateur3">
+            </div>
+            <div class="form-group">
+              <label>Role</label>
+              <select class="form-control" [(ngModel)]="editingUser.role" name="editRole">
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn btn-primary" 
+                    [disabled]="!isValidEditUser()" 
+                    (click)="updateUser()">
+              <i class="fas fa-save"></i> Save Changes
+            </button>
+            <button class="btn btn-secondary" type="button" (click)="cancelEdit()">
+              <i class="fas fa-times"></i> Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>

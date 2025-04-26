@@ -1,119 +1,783 @@
+@use "sass:color";
+
+// Color Variables
+$primary-color: #4a6fa5;
+$secondary-color: #6c8fc7;
+$dark-color: #2c3e50;
+$light-color: #f8f9fa;
+$text-color: #333;
+$white: #ffffff;
+$gray-light: #f5f7fa;
+$gray-medium: #e1e5eb;
+$gray-dark: #6c757d;
+$success-color: #28a745;
+$warning-color: #ffc107;
+$error-color: #dc3545;
+$info-color: #17a2b8;
+$hover-color: rgba(74, 111, 165, 0.1);
+
 .dashboard-layout {
-    display: flex;
-    min-height: 100vh;
-    background-color: #F5EFE6;
-  }
+  display: flex;
+  min-height: 100vh;
+  background-color: $gray-light;
+}
+
+.content {
+  flex: 1;
+  padding: 2rem;
+  margin-left: 280px; // Match sidebar width
   
-  .dashboard-content {
-    flex-grow: 1;
-    padding: 2rem;
-    color: #2D2D2D;
-    font-family: 'Segoe UI', sans-serif;
-  }
-  
-  h2 {
-    color: #8B5E3B;
-    margin-bottom: 1.5rem;
-  }
-  
-  .request-card {
-    background-color: #FFFFFF;
-    border-left: 5px solid #C19A6B;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-    padding: 1rem 1.5rem;
-    margin-bottom: 1rem;
-    cursor: pointer;
-    transition: 0.3s;
-    border-radius: 6px;
-  
-    &:hover {
-      background-color: #F5EFE6;
-      border-left-color: #A57B56;
-    }
-  
-    p {
-      margin: 0.2rem 0;
-    }
-  }
-  
-  .no-requests {
-    background-color: #FFF3E0;
-    border: 1px solid #E0C3A9;
-    padding: 1rem;
-    border-radius: 6px;
-    color: #6A4028;
-    font-weight: bold;
-  }
-  
-  .modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(44, 30, 22, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 99;
-  }
-  
-  .modal-box {
-    background-color: #FFFFFF;
-    width: 90%;
-    max-width: 1000px;
-    border-radius: 10px;
-    padding: 2rem;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
-  }
-  
-  .module-section {
-    margin-top: 1.5rem;
-  
-    h4 {
-      color: #6A4028;
+  .content-header {
+    margin-bottom: 2rem;
+    
+    h2 {
+      font-size: 1.75rem;
+      color: $dark-color;
       margin-bottom: 0.5rem;
     }
+    
+    .subtitle {
+      color: $gray-dark;
+      font-size: 1rem;
+      margin: 0;
+    }
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  background: $white;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   
-    table {
-      width: 100%;
-      border-collapse: collapse;
+  .empty-icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1rem;
+    color: $gray-medium;
+  }
   
-      th, td {
-        padding: 0.5rem;
-        border: 1px solid #ddd;
+  h3 {
+    font-size: 1.25rem;
+    color: $dark-color;
+    margin-bottom: 0.5rem;
+  }
+  
+  p {
+    color: $gray-dark;
+    margin: 0;
+  }
+}
+
+.request-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.request-card {
+  background: $white;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  overflow: hidden;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .request-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid $gray-light;
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: $primary-color;
+        color: $white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.875rem;
       }
+      
+      h4 {
+        margin: 0;
+        font-size: 1rem;
+        color: $dark-color;
+      }
+      
+      .user-email {
+        font-size: 0.875rem;
+        color: $gray-dark;
+      }
+    }
+    
+    .request-date {
+      font-size: 0.875rem;
+      color: $gray-dark;
+    }
+  }
   
-      th {
-        background-color: #8B5E3B;
-        color: #fff;
+  .request-body {
+    padding: 1rem 1.5rem;
+    
+    .request-detail {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.9375rem;
+      
+      .detail-icon {
+        width: 18px;
+        height: 18px;
+        color: $primary-color;
+      }
+    }
+  }
+}
+
+// Modal Styles
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1rem;
+  
+  .modal-box {
+    background: $white;
+    border-radius: 0.5rem;
+    width: 90%;
+    max-width: 1000px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    animation: modalFadeIn 0.3s ease-out;
+    
+    .modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid $gray-medium;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      h3 {
+        margin: 0;
+        font-size: 1.25rem;
+        color: $dark-color;
+      }
+      
+      .close-btn {
+        background: none;
+        border: none;
+        padding: 0.5rem;
+        cursor: pointer;
+        color: $gray-dark;
+        transition: color 0.2s;
+        
+        &:hover {
+          color: $dark-color;
+        }
+        
+        svg {
+          width: 24px;
+          height: 24px;
+        }
+      }
+    }
+    
+    .modal-body {
+      padding: 1.5rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+  }
+}
+
+.request-summary {
+  margin-bottom: 1.5rem;
+  
+  .user-summary {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    
+    .user-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: $primary-color;
+      color: $white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 1rem;
+      
+      &.large {
+        width: 60px;
+        height: 60px;
+        font-size: 1.25rem;
+      }
+    }
+    
+    h4 {
+      margin: 0;
+      font-size: 1.125rem;
+      color: $dark-color;
+    }
+    
+    .user-email {
+      font-size: 0.875rem;
+      color: $gray-dark;
+    }
+  }
+  
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    background: $gray-light;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    
+    .summary-item {
+      display: flex;
+      flex-direction: column;
+      
+      label {
+        font-size: 0.75rem;
+        color: $gray-dark;
+        margin-bottom: 0.25rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      
+      span {
+        font-weight: 500;
+        color: $dark-color;
+        
+        &.status-badge {
+          display: inline-block;
+          padding: 0.25rem 0.5rem;
+          border-radius: 1rem;
+          font-size: 0.75rem;
+          font-weight: 600;
+          background: color.adjust($info-color, $lightness: 40%);
+          color: darken($info-color, 20%);
+          text-transform: capitalize;
+        }
+      }
+    }
+  }
+}
+
+.permissions-section {
+  h4 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: $dark-color;
+  }
+}
+
+.module-accordion {
+  margin-bottom: 1rem;
+  border: 1px solid $gray-medium;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  
+  .module-header {
+    padding: 1rem 1.5rem;
+    background: $gray-light;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    
+    h5 {
+      margin: 0;
+      font-size: 1rem;
+      color: $dark-color;
+    }
+    
+    .module-toggle {
+      width: 20px;
+      height: 20px;
+      transition: transform 0.3s ease;
+      
+      &.expanded {
+        transform: rotate(180deg);
       }
     }
   }
   
-  .modal-actions {
+  .module-content {
+    padding: 1rem;
+    background: $white;
+  }
+}
+
+.table-container {
+  overflow-x: auto;
+  margin: 0 -1rem;
+  padding: 0 1rem;
+}
+
+.permissions-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+  
+  th, td {
+    padding: 0.75rem;
+    text-align: center;
+    vertical-align: middle;
+    border-bottom: 1px solid $gray-medium;
+  }
+  
+  th {
+    background: $primary-color;
+    color: $white;
+    font-weight: 500;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .function-name {
+    font-weight: 500;
+    color: $dark-color;
+    text-align: left;
+  }
+  
+  .comment-cell {
+    text-align: left;
+    font-size: 0.875rem;
+    color: $gray-dark;
+  }
+  
+  .permission-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: default;
+    accent-color: $primary-color;
+  }
+  
+  tr:hover {
+    background-color: $hover-color;
+  }
+}
+
+// Replace your existing rejection styles with these:
+
+.modal-actions {
+  padding: 1.5rem;
+  border-top: 1px solid $gray-medium;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  
+  .action-buttons {
     display: flex;
     justify-content: flex-end;
-    margin-top: 1.5rem;
-  
-    button {
-      margin-left: 1rem;
-      padding: 0.6rem 1.2rem;
-      border: none;
-      border-radius: 4px;
-      font-weight: bold;
-      cursor: pointer;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    font-size: 0.9375rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid transparent;
+    
+    &-validate {
+      background: $success-color;
+      color: $white;
+      
+      &:hover:not(:disabled) {
+        background: darken($success-color, 7%);
+        box-shadow: 0 2px 6px rgba($success-color, 0.2);
+      }
+      
+      &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        background: lighten($success-color, 15%);
+      }
     }
-  
-    .btn-success {
-      background-color: #8B5E3B;
-      color: white;
+    
+    &-reject {
+      background: $white;
+      color: $error-color;
+      border-color: $error-color;
+      margin-right: auto;
+      
+      &:hover:not(:disabled) {
+        background: rgba($error-color, 0.05);
+      }
+      
+      &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
     }
+    
+    &-close {
+      background: $white;
+      color: $dark-color;
+      border-color: $gray-medium;
+      
+      &:hover {
+        background: $gray-light;
+      }
+    }
+    
+    &-outline {
+      background: $white;
+      color: $dark-color;
+      border-color: $gray-medium;
+      
+      &:hover {
+        background: $gray-light;
+      }
+    }
+    
+    &-danger {
+      background: $error-color;
+      color: $white;
+      
+      &:hover {
+        background: darken($error-color, 7%);
+        box-shadow: 0 2px 6px rgba($error-color, 0.2);
+      }
+    }
+    
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: $white;
+      animation: spin 1s ease-in-out infinite;
+    }
+  }
+}
+
+.rejection-comment-box {
+  background: $gray-light;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  animation: fadeIn 0.3s ease-out;
+  border: 1px solid rgba($error-color, 0.2);
   
-    .btn-secondary {
-      background-color: #ccc;
+  .comment-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    
+    h4 {
+      margin: 0;
+      font-size: 1.125rem;
+      color: $dark-color;
+    }
+    
+    small {
+      color: $gray-dark;
+      font-size: 0.8125rem;
     }
   }
   
+  .comment-textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 1rem;
+    border: 1px solid $gray-medium;
+    border-radius: 0.375rem;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 0.9375rem;
+    color: $text-color;
+    transition: all 0.2s ease;
+    
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+    }
+    
+    &::placeholder {
+      color: lighten($gray-dark, 20%);
+    }
+  }
+  
+  .comment-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .modal-actions {
+    .action-buttons {
+      flex-direction: column;
+      
+      .btn {
+        width: 100%;
+        justify-content: center;
+        
+        &-reject {
+          margin-right: 0;
+          order: 1;
+        }
+        
+        &-validate {
+          order: 2;
+        }
+        
+        &-close {
+          order: 3;
+        }
+      }
+    }
+    
+    .rejection-comment-box {
+      .comment-footer {
+        flex-direction: column;
+        
+        .btn {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+.success-snackbar {
+  background-color: #28a745;
+  color: white;
+}
+
+.error-snackbar {
+  background-color: #dc3545;
+  color: white;
+}
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// Responsive adjustments
+@media (max-width: 992px) {
+  .content {
+    margin-left: 0;
+    padding: 1rem;
+  }
+  
+  .request-card .request-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    
+    .request-date {
+      align-self: flex-end;
+    }
+  }
+  
+  .summary-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+// Add these styles to your SCSS file
+.btn-reject {
+  background: $error-color;
+  color: $white;
+  border: 1px solid $error-color;
+  margin-right: auto; // Push other buttons to the right
+  
+  &:hover:not(:disabled) {
+    background: darken($error-color, 5%);
+  }
+  
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.rejection-comment {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 1rem;
+  background: $gray-light;
+  border-radius: 0.5rem;
+  
+  textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 0.75rem;
+    border: 1px solid $gray-medium;
+    border-radius: 0.25rem;
+    resize: vertical;
+    margin-bottom: 0.75rem;
+    
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+    }
+  }
+  
+  .comment-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+  }
+  
+  .btn-confirm-reject {
+    background: $error-color;
+    color: $white;
+    border: 1px solid $error-color;
+    
+    &:hover {
+      background: darken($error-color, 5%);
+    }
+  }
+  
+  .btn-cancel {
+    background: $white;
+    color: $dark-color;
+    border: 1px solid $gray-medium;
+    
+    &:hover {
+      background: $gray-light;
+    }
+  }
+
+}
+.validation-comment-box {
+  background: $gray-light;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  animation: fadeIn 0.3s ease-out;
+  border: 1px solid rgba($success-color, 0.2);
+  
+  .comment-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    
+    h4 {
+      margin: 0;
+      font-size: 1.125rem;
+      color: $dark-color;
+    }
+    
+    small {
+      color: $gray-dark;
+      font-size: 0.8125rem;
+    }
+  }
+  
+  .comment-textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 1rem;
+    border: 1px solid $gray-medium;
+    border-radius: 0.375rem;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 0.9375rem;
+    color: $text-color;
+    transition: all 0.2s ease;
+    
+    &:focus {
+      outline: none;
+      border-color: $success-color;
+      box-shadow: 0 0 0 3px rgba($success-color, 0.1);
+    }
+    
+    &::placeholder {
+      color: lighten($gray-dark, 20%);
+    }
+  }
+  
+  .comment-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    
+    .btn-success {
+      background: $success-color;
+      color: $white;
+      
+      &:hover {
+        background: darken($success-color, 7%);
+        box-shadow: 0 2px 6px rgba($success-color, 0.2);
+      }
+    }
+  }
+}
+@media (max-width: 768px) {
+  .modal-actions {
+    flex-direction: column;
+    
+    .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}

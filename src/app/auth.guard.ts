@@ -1,23 +1,24 @@
+// auth.guard.ts
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
+import { AuthService } from './services/auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   canActivate(): boolean {
-    const userRole = localStorage.getItem('role'); // ✅ Corrected key
-
-    console.log('AuthGuard: User Role ->', userRole); // Debug log
-
-    if (userRole === 'admin') {
-      return true; // ✅ Allow access if user is an admin
-    } else {
-      console.warn('AuthGuard: Access Denied, Redirecting...');
-      this.router.navigate(['/login']); // 🚫 Redirect if not an admin
-      return false;
+    if (this.authService.isLoggedIn() && this.authService.isAdmin()) {
+      return true;
     }
+    
+    console.warn('AuthGuard: Access Denied, Redirecting...');
+    this.router.navigate(['/login']);
+    return false;
   }
 }

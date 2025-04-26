@@ -1,182 +1,560 @@
 @use "sass:color";
 
-// Theme Variables
-$primary-brown: #8B5E3B;
-$dark-brown: #6A4028;
-$light-brown: #C19A6B;
-$background: #F5EFE6;
-$text-color: #2D2D2D;
-$hover-light: #A57B56;
-$white: #fff;
-
-:host {
-  display: block;
-  height: 100vh;
-  overflow: hidden;
-}
+// Color Variables
+$primary-color: #4a6fa5;
+$secondary-color: #6c8fc7;
+$dark-color: #2c3e50;
+$light-color: #f8f9fa;
+$text-color: #333;
+$white: #ffffff;
+$gray-light: #f5f7fa;
+$gray-medium: #e1e5eb;
+$gray-dark: #6c757d;
+$success-color: #28a745;
+$warning-color: #ffc107;
+$error-color: #dc3545;
+$info-color: #17a2b8;
+$hover-color: rgba(74, 111, 165, 0.1);
 
 .dashboard-layout {
   display: flex;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  background-color: $gray-light;
+}
 
-  app-user-sidebar {
-    flex-shrink: 0;
-    background-color: $dark-brown;
-    color: white;
-    height: 100%;
-    position: relative;
-    top: 0;
-  }
-
-  .validation-history-container {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding: 30px;
-    background-color: $background;
-    color: $text-color;
-    height: 100%;
-
+.content {
+  flex: 1;
+  padding: 2rem;
+  margin-left: 280px; // Match sidebar width
+  
+  .content-header {
+    margin-bottom: 2rem;
+    
     h2 {
-      font-size: 24px;
-      margin-bottom: 20px;
-      color: $primary-brown;
+      font-size: 1.75rem;
+      color: $dark-color;
+      margin-bottom: 0.5rem;
     }
-
-    .no-requests {
-      font-style: italic;
-      color: $light-brown;
+    
+    .subtitle {
+      color: $gray-dark;
+      font-size: 1rem;
+      margin: 0;
     }
+  }
+}
 
-    .validation-card {
-      background-color: $white;
-      border: 1px solid $light-brown;
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      transition: transform 0.2s ease;
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  background: $white;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+  .empty-icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1rem;
+    color: $gray-medium;
+  }
+  
+  h3 {
+    font-size: 1.25rem;
+    color: $dark-color;
+    margin-bottom: 0.5rem;
+  }
+  
+  p {
+    color: $gray-dark;
+    margin: 0;
+  }
+}
 
-      &:hover {
-        transform: translateY(-3px);
-        background-color: $hover-light;
+.validation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.validation-card {
+  background: $white;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  &.rejected {
+    border-left: 4px solid $error-color;
+    background-color: rgba($error-color, 0.05);
+  }
+  
+  .validation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid $gray-light;
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: $success-color;
+        color: $white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.875rem;
       }
-
-      .validation-id {
-        font-weight: bold;
-        color: $dark-brown;
-        font-size: 16px;
-        margin-bottom: 5px;
+      
+      h4 {
+        margin: 0;
+        font-size: 1rem;
+        color: $dark-color;
       }
-
-      .validation-details {
-        p {
-          margin: 6px 0;
-          font-size: 16px;
+      
+      .user-email {
+        font-size: 0.875rem;
+        color: $gray-dark;
+      }
+      
+      .validation-status {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 1rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        background: rgba($success-color, 0.1);
+        color: $success-color;
+        
+        &.rejected {
+          background: rgba($error-color, 0.1);
+          color: $error-color;
         }
-
-        button {
-          margin-top: 10px;
-          margin-right: 10px;
-          padding: 8px 16px;
-          border-radius: 6px;
-          font-weight: 600;
-          border: none;
-          cursor: pointer;
-          transition: background-color 0.2s ease;
-          background-color: $light-brown;
-          color: $white;
-
-          &:hover {
-            background-color: $primary-brown;
-          }
-        }
+      }
+    }
+    
+    .validation-date {
+      font-size: 0.875rem;
+      color: $gray-dark;
+    }
+  }
+  
+  .validation-body {
+    padding: 1rem 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    
+    .validation-detail {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9375rem;
+      
+      .detail-icon {
+        width: 18px;
+        height: 18px;
+        color: $primary-color;
+      }
+    }
+    
+    .validation-comment, .rejection-comment {
+      grid-column: 1 / -1;
+      margin-top: 0.75rem;
+      padding: 0.75rem;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      background-color: rgba($success-color, 0.08);
+      border-left: 4px solid $success-color;
+      color: darken($success-color, 15%);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      
+      strong {
+        font-weight: 600;
+        display: block;
+        margin-bottom: 0.25rem;
+        color: darken($success-color, 25%);
+      }
+    }
+    
+    .rejection-comment {
+      background-color: rgba($error-color, 0.08);
+      border-left-color: $error-color;
+      color: darken($error-color, 15%);
+      
+      strong {
+        color: darken($error-color, 25%);
       }
     }
   }
-
-  .modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+  
+  .validation-actions {
+    padding: 0 1.5rem 1.5rem;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-
-    .modal-box {
-      background: $white;
-      padding: 30px;
-      width: 90%;
-      max-width: 1000px;
-      border-radius: 10px;
-      overflow-y: auto;
-      max-height: 90vh;
-    }
-
-    .module-section {
-      margin-bottom: 25px;
-
-      table {
-        width: 100%;
-        min-width: 800px;
-        background: $white;
-        border-radius: 8px;
-        overflow: hidden;
-        border-collapse: collapse;
-        box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-      }
-
-      th {
-        background: $primary-brown;
-        color: $white;
-        padding: 10px;
-      }
-
-      td {
-        text-align: center;
-        vertical-align: middle;
-        padding: 10px;
-        border-bottom: 1px solid #ddd;
-
-        input[type="checkbox"] {
-          transform: scale(1.2);
-          cursor: default;
-        }
-
-        textarea {
-          width: 100%;
-          resize: none;
-          border: 1px solid $light-brown;
-          border-radius: 4px;
-          padding: 6px;
-        }
-      }
-
-      tbody tr:hover {
-        background: color.adjust($primary-brown, $lightness: 30%);
-      }
-    }
-
-    .modal-actions {
+    justify-content: flex-end;
+    
+    .btn-view {
+      padding: 0.5rem 1rem;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+      font-weight: 500;
       display: flex;
-      justify-content: flex-end;
-      gap: 10px;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      background: $gray-light;
+      color: $dark-color;
+      border: none;
+      cursor: pointer;
+      
+      &:hover {
+        background: $gray-medium;
+      }
+      
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
+}
 
-      button {
-        padding: 10px 16px;
-        background-color: $primary-brown;
-        color: white;
+// Modal Styles
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1rem;
+  
+  .modal-box {
+    background: $white;
+    border-radius: 0.5rem;
+    width: 90%;
+    max-width: 1000px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    animation: modalFadeIn 0.3s ease-out;
+    
+    .modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid $gray-medium;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      h3 {
+        margin: 0;
+        font-size: 1.25rem;
+        color: $dark-color;
+      }
+      
+      .close-btn {
+        background: none;
         border: none;
-        border-radius: 5px;
-
+        padding: 0.5rem;
+        cursor: pointer;
+        color: $gray-dark;
+        transition: color 0.2s;
+        
         &:hover {
-          background-color: $hover-light;
+          color: $dark-color;
+        }
+        
+        svg {
+          width: 24px;
+          height: 24px;
         }
       }
     }
+    
+    .modal-body {
+      padding: 1.5rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+  }
+}
+
+.validation-summary {
+  margin-bottom: 1.5rem;
+  
+  .user-summary {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    
+    .user-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: $success-color;
+      color: $white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 1rem;
+      
+      &.large {
+        width: 60px;
+        height: 60px;
+        font-size: 1.25rem;
+      }
+    }
+    
+    h4 {
+      margin: 0;
+      font-size: 1.125rem;
+      color: $dark-color;
+    }
+    
+    .user-email {
+      font-size: 0.875rem;
+      color: $gray-dark;
+    }
+  }
+  
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    background: $gray-light;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    
+    .summary-item {
+      display: flex;
+      flex-direction: column;
+      
+      label {
+        font-size: 0.75rem;
+        color: $gray-dark;
+        margin-bottom: 0.25rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      
+      span {
+        font-weight: 500;
+        color: $dark-color;
+      }
+    }
+  }
+  
+  .validation-comment-section {
+    margin: 1.5rem 0;
+    
+    h4 {
+      font-size: 1rem;
+      color: $dark-color;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      
+      &:before {
+        content: '';
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2328a745'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/%3E%3C/svg%3E");
+      }
+    }
+    
+    .comment-box {
+      padding: 1rem;
+      background: rgba($success-color, 0.05);
+      border-radius: 8px;
+      border-left: 4px solid $success-color;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      
+      &.rejected-comment {
+        background: rgba($error-color, 0.05);
+        border-left-color: $error-color;
+      }
+    }
+  }
+  
+  .validation-comment-section .rejected-comment + h4:before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23dc3545'%3E%3Cpath d='M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z'/%3E%3C/svg%3E");
+  }
+}
+
+.permissions-section {
+  h4 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: $dark-color;
+  }
+}
+
+.module-accordion {
+  margin-bottom: 1rem;
+  border: 1px solid $gray-medium;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  
+  .module-header {
+    padding: 1rem 1.5rem;
+    background: $gray-light;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    
+    h5 {
+      margin: 0;
+      font-size: 1rem;
+      color: $dark-color;
+    }
+    
+    .module-toggle {
+      width: 20px;
+      height: 20px;
+      transition: transform 0.3s ease;
+      
+      &.expanded {
+        transform: rotate(180deg);
+      }
+    }
+  }
+  
+  .module-content {
+    padding: 1rem;
+    background: $white;
+  }
+}
+
+.table-container {
+  overflow-x: auto;
+  margin: 0 -1rem;
+  padding: 0 1rem;
+}
+
+.permissions-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+  
+  th, td {
+    padding: 0.75rem;
+    text-align: center;
+    vertical-align: middle;
+    border-bottom: 1px solid $gray-medium;
+  }
+  
+  th {
+    background: $success-color;
+    color: $white;
+    font-weight: 500;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .function-name {
+    font-weight: 500;
+    color: $dark-color;
+    text-align: left;
+  }
+  
+  .comment-cell {
+    text-align: left;
+    font-size: 0.875rem;
+    color: $gray-dark;
+  }
+  
+  .permission-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: default;
+    accent-color: $success-color;
+  }
+  
+  tr:hover {
+    background-color: $hover-color;
+  }
+}
+
+.modal-actions {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid $gray-medium;
+  display: flex;
+  justify-content: flex-end;
+  
+  .btn-close {
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.25rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+    background: $white;
+    color: $dark-color;
+    border: 1px solid $gray-medium;
+    
+    &:hover {
+      background: $gray-light;
+    }
+  }
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 992px) {
+  .content {
+    margin-left: 0;
+    padding: 1rem;
+  }
+  
+  .validation-card .validation-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    
+    .validation-date {
+      align-self: flex-end;
+    }
+  }
+  
+  .summary-grid {
+    grid-template-columns: 1fr !important;
   }
 }

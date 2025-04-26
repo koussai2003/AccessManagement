@@ -1,89 +1,184 @@
-<div class="request-container">
-  <h2>Access Requests</h2>
-
-  <div class="filters">
-    <input type="text" placeholder="Search user or app..." [(ngModel)]="searchTerm" (input)="applyFilters()" />
-
-    <div class="dropdown-wrapper">
-      <select [(ngModel)]="sortOrder" (change)="applyDateAndSortFilters()">
-        <option value="newest">Newest First</option>
-        <option value="oldest">Oldest First</option>
-      </select>
-      <span class="dropdown-icon">&#9662;</span>
-    </div>
-    <div class="date-filter">
-      <label for="startDate">Début :</label>
-      <input id="startDate" type="date" [(ngModel)]="startDate" (change)="applyDateAndSortFilters()">
-    </div>
-    
-    <div class="date-filter">
-      <label for="endDate">Fin :</label>
-      <input id="endDate" type="date" [(ngModel)]="endDate" (change)="applyDateAndSortFilters()">
-    </div>
-    
-
-  </div>
-
-  <div *ngIf="requests.length === 0" class="no-requests">No matching requests found.</div>
-
-  <div *ngFor="let req of requests" class="request-card" (click)="openRequest(req)">
-    <div class="request-id">Dem{{ req.id }}</div>
-    <div class="request-details">
-      <p><strong>User:</strong> {{ req.userName }} ({{ req.userEmail }})</p>
-      <p><strong>Application:</strong> {{ req.applicationName }}</p>
-      <p><strong>Date:</strong> {{ req.submittedAt | date:'short' }}</p>
-      <p><strong>Status:</strong> {{ req.state }}</p>
-      <div class="meta-info">
-      <p><strong>Société:</strong> {{ req.societe }}</p>
-      <p><strong>Fonction:</strong> {{ req.fonction }}</p>
-      <p><strong>Direction:</strong> {{ req.direction }}</p>
-      </div>
+<div class="request-management-container">
+  <div class="page-header">
+    <h2><i class="fas fa-tasks"></i> Access Requests</h2>
+    <div class="header-actions">
+      <button class="btn btn-refresh" (click)="loadRequests()">
+        <i class="fas fa-sync-alt"></i> Refresh
+      </button>
+      <button class="btn btn-filter" (click)="toggleRejectedRequests()">
+        <i class="fas fa-filter"></i> {{ showRejected ? 'Show Active' : 'Show Rejected' }}
+      </button>
     </div>
   </div>
 
-  <!-- Modal -->
-  <div class="modal-backdrop" *ngIf="showModal" (click)="closeModal()">
-    <div class="modal-box animate-in" (click)="$event.stopPropagation()">
-      <h3>Request from {{ selectedRequest?.userName }} ({{ selectedRequest?.userEmail }})</h3>
-      <div class="user-meta">
-      <p><strong>Société:</strong> {{ selectedRequest?.societe }}</p>
-      <p><strong>Fonction:</strong> {{ selectedRequest?.fonction }}</p>
-      <p><strong>Direction:</strong> {{ selectedRequest?.direction }}</p>
+  <!-- Filters Section -->
+  <div class="management-card filters-section">
+    <div class="search-container">
+      <div class="search-input-wrapper">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" 
+               class="search-input" 
+               placeholder="Search user or application..." 
+               [(ngModel)]="searchTerm" 
+               (input)="applyFilters()">
       </div>
+    </div>
 
-      <div class="module-section" *ngFor="let mod of parsedModules">
-        <h4>{{ mod.name }}</h4>
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>Fonction</th>
-              <th>Consultation</th>
-              <th>Création</th>
-              <th>Modification</th>
-              <th>Suppression</th>
-              <th>Validation</th>
-              <th>Commentaire</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let func of mod.functions">
-              <td>{{ func.name }}</td>
-              <td><input type="checkbox" [checked]="func.options.consultation" disabled></td>
-              <td><input type="checkbox" [checked]="func.options.creation" disabled></td>
-              <td><input type="checkbox" [checked]="func.options.modification" disabled></td>
-              <td><input type="checkbox" [checked]="func.options.suppression" disabled></td>
-              <td><input type="checkbox" [checked]="func.options.validation" disabled></td>
-              <td>{{ func.comment }}</td>
-            </tr>
-          </tbody>
-        </table>
+    <div class="filter-group">
+      <label>Sort Order:</label>
+      <div class="custom-select">
+        <select [(ngModel)]="sortOrder" (change)="applyDateAndSortFilters()">
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+        </select>
+        <div class="select-arrow"></div>
       </div>
+    </div>
 
-      <textarea class="form-control mt-3" [(ngModel)]="adminComment" placeholder="Optional comment (on rejection)"></textarea>
+    <div class="filter-group date-filter">
+      <label>From:</label>
+      <input type="date" [(ngModel)]="startDate" (change)="applyDateAndSortFilters()">
+    </div>
 
-      <div class="text-end mt-3">
-        <button class="btn btn-danger" (click)="denyRequest(selectedRequest.id)">Reject</button>
-        <button class="btn btn-success ms-2" (click)="acceptRequest(selectedRequest.id)">Accept</button>
+    <div class="filter-group date-filter">
+      <label>To:</label>
+      <input type="date" [(ngModel)]="endDate" (change)="applyDateAndSortFilters()">
+    </div>
+  </div>
+
+  <!-- Requests List -->
+  <div *ngIf="requests.length === 0" class="no-requests">
+    <i class="fas fa-inbox"></i>
+    <p>No matching requests found</p>
+  </div>
+
+  <div class="requests-grid">
+    <div *ngFor="let req of requests" 
+         class="request-card" 
+         [ngClass]="getStatusClass(req.state)"
+         (click)="openRequest(req)">
+         <div class="request-header">
+          <span class="request-id">REQ-{{ req.id | number:'3.0' }}</span>
+          <span class="request-status">{{ req.state }}</span>
+          <span *ngIf="req.lockedByAdmin" class="request-lock">
+            <i class="fas fa-lock"></i> In use by {{ req.lockedByAdmin }}
+          </span>
+        </div>
+      <div class="request-body">
+        <div class="request-info">
+          <p class="request-user"><i class="fas fa-user"></i> {{ req.userName }} ({{ req.userEmail }})</p>
+          <p class="request-app"><i class="fas fa-cube"></i> {{ req.applicationName }}</p>
+          <p class="request-date"><i class="fas fa-calendar-alt"></i> {{ req.submittedAt | date:'mediumDate' }}</p>
+        </div>
+        <div class="request-meta">
+          <div class="meta-item">
+            <i class="fas fa-building"></i> {{ req.societe }}
+          </div>
+          <div class="meta-item">
+            <i class="fas fa-briefcase"></i> {{ req.fonction }}
+          </div>
+          <div class="meta-item">
+            <i class="fas fa-sitemap"></i> {{ req.direction }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Request Detail Modal -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>
+          <i class="fas fa-file-alt"></i>
+          Request from {{ selectedRequest?.userName }} ({{ selectedRequest?.userEmail }})
+        </h3>
+        <button class="btn-close" (click)="closeModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="user-meta">
+          <div class="meta-item">
+            <i class="fas fa-building"></i> <strong>Company:</strong> {{ selectedRequest?.societe }}
+          </div>
+          <div class="meta-item">
+            <i class="fas fa-briefcase"></i> <strong>Function:</strong> {{ selectedRequest?.fonction }}
+          </div>
+          <div class="meta-item">
+            <i class="fas fa-sitemap"></i> <strong>Department:</strong> {{ selectedRequest?.direction }}
+          </div>
+          <div class="meta-item">
+            <i class="fas fa-calendar"></i> <strong>Submitted:</strong> {{ selectedRequest?.submittedAt | date:'medium' }}
+          </div>
+          <div class="meta-item">
+            <i class="fas fa-info-circle"></i> <strong>Status:</strong> {{ selectedRequest?.state }}
+          </div>
+        </div>
+
+        <div class="modules-container">
+          <div *ngFor="let mod of parsedModules" class="module-card">
+            <h4 class="module-title">
+              <i class="fas fa-puzzle-piece"></i> {{ mod.name }}
+            </h4>
+            
+            <div class="functions-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Function</th>
+                    <th>Consultation</th>
+                    <th>Creation</th>
+                    <th>Modification</th>
+                    <th>Suppression</th>
+                    <th>Validation</th>
+                    <th>Comment</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let func of mod.functions">
+                    <td class="function-name">{{ func.name }}</td>
+                    <td><input type="checkbox" [checked]="func.options.consultation" disabled></td>
+                    <td><input type="checkbox" [checked]="func.options.creation" disabled></td>
+                    <td><input type="checkbox" [checked]="func.options.modification" disabled></td>
+                    <td><input type="checkbox" [checked]="func.options.suppression" disabled></td>
+                    <td><input type="checkbox" [checked]="func.options.validation" disabled></td>
+                    <td>{{ func.comment }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-comment">
+          <label>Admin Comment:</label>
+          <textarea [(ngModel)]="adminComment" placeholder="Add comment (required for rejection)"></textarea>
+        </div>
+
+        <div class="modal-actions" *ngIf="isRejectedOrFinished(selectedRequest.state)">
+          <button class="btn btn-info" (click)="closeModal()">
+            <i class="fas fa-check"></i> OK
+          </button>
+        </div>
+        
+        <div class="modal-actions" *ngIf="!isRejectedOrFinished(selectedRequest.state)">
+          <button class="btn btn-danger" (click)="denyRequest(selectedRequest.id)" [disabled]="!adminComment">
+            <i class="fas fa-times-circle"></i> Reject
+          </button>
+          <button *ngIf="selectedRequest.state !== 'Accepted'" 
+            class="btn btn-primary" 
+            (click)="acceptRequest(selectedRequest.id)">
+            <i class="fas fa-check-circle"></i> Accept
+          </button>
+          <button *ngIf="selectedRequest.state === 'Accepted'" 
+            class="btn btn-success" 
+            (click)="approveRequest(selectedRequest.id)">
+            <i class="fas fa-thumbs-up"></i> Approve
+          </button>
+        </div>
+        
       </div>
     </div>
   </div>

@@ -1,251 +1,517 @@
 @use "sass:color";
 
-// Theme Variables
-$primary-brown: #8B5E3B;
-$dark-brown: #6A4028;
-$light-brown: #C19A6B;
-$background: #F5EFE6;
-$text-color: #2D2D2D;
-$hover-light: #A57B56;
-$white: #fff;
+// Color Variables
+$primary-color: #4a6fa5;
+$secondary-color: #6c8fc7;
+$dark-color: #2c3e50;
+$light-color: #f8f9fa;
+$text-color: #333;
+$white: #ffffff;
+$gray-light: #f5f7fa;
+$gray-medium: #e1e5eb;
+$gray-dark: #6c757d;
+$success-color: #28a745;
+$warning-color: #ffc107;
+$error-color: #dc3545;
+$info-color: #17a2b8;
+$hover-color: rgba(74, 111, 165, 0.1);
 
-.request-container {
-  padding: 30px;
-  background-color: $background;
-  color: $text-color;
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: $gray-light;
+}
 
-  h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: $primary-brown;
-  }
-
-  .no-requests {
-    font-style: italic;
-    color: $light-brown;
-  }
-
-  .request-card {
-    background-color: $white;
-    border: 1px solid $light-brown;
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease;
-
-    &:hover {
-      transform: translateY(-3px);
-      background-color: $hover-light;
+.content {
+  flex: 1;
+  padding: 2rem;
+  margin-left: 280px; // Match sidebar width
+  
+  .content-header {
+    margin-bottom: 2rem;
+    
+    h2 {
+      font-size: 1.75rem;
+      color: $dark-color;
+      margin-bottom: 0.5rem;
     }
-
-    .request-id {
-      font-weight: bold;
-      color: $dark-brown;
-      font-size: 16px;
-      margin-bottom: 5px;
-    }
-
-    .request-details {
-      p {
-        margin: 5px 0;
-        font-size: 16px;
-      }
-
-      button {
-        margin-top: 10px;
-        margin-right: 10px;
-        padding: 8px 16px;
-        border-radius: 6px;
-        font-weight: 600;
-        border: none;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-
-        &.btn-outline-primary {
-          background-color: $light-brown;
-          color: $white;
-
-          &:hover {
-            background-color: $primary-brown;
-            color: white;
-          }
-        }
-
-        &.btn-warning {
-          background-color: $light-brown;
-          color: white;
-
-          &:hover {
-            background-color: $primary-brown;
-          }
-        }
-      }
-    }
-  }
-
-  .modal-backdrop {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(0,0,0,0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  
-    .modal-box {
-      background: $white;
-      padding: 30px;
-      width: 90%;
-      max-width: 1000px;
-      border-radius: 10px;
-      overflow-y: auto;
-      max-height: 90vh;
-  
-      h4 {
-        color: $primary-brown;
-        margin-bottom: 20px;
-      }
-  
-      textarea {
-        resize: vertical;
-        border: 2px solid $light-brown;
-        border-radius: 6px;
-        padding: 8px;
-        font-size: 14px;
-        color: $text-color;
-        background-color: $background;
-        transition: border-color 0.3s;
-  
-        &:focus {
-          outline: none;
-          border-color: $primary-brown;
-          box-shadow: 0 0 0 3px rgba($primary-brown, 0.2);
-        }
-  
-        &:disabled {
-          background-color: #f2f2f2;
-          cursor: not-allowed;
-        }
-      }
-  
-      input[type="checkbox"]:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-      }
-  
-      .modal-actions,
-      .text-end {
-        margin-top: 20px;
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-  
-        button {
-          padding: 10px 18px;
-          font-weight: bold;
-          border-radius: 6px;
-          border: none;
-          cursor: pointer;
-          transition: 0.3s ease;
-  
-          &.btn-secondary {
-            background-color: $light-brown;
-            color: $white;
-  
-            &:hover {
-              background-color: $primary-brown;
-            }
-          }
-  
-          &.btn-success {
-            background-color: $primary-brown;
-            color: $white;
-  
-            &:hover {
-              background-color: color.adjust($primary-brown, $lightness: -10%);
-            }
-          }
-        }
-      }
-    }
-  }
-  
-
-  .module-section {
-    margin-bottom: 25px;
-
-    table {
-      width: 100%;
-      min-width: 800px;
-      background: $white;
-      border-radius: 8px;
-      overflow: hidden;
-      border-collapse: collapse;
-      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-    }
-
-    th {
-      background: $primary-brown;
-      color: $white;
-      padding: 10px;
-    }
-
-    td {
-      text-align: center;
-      vertical-align: middle;
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
-
-      textarea {
-        width: 100%;
-        resize: none;
-        border: 1px solid $light-brown;
-        border-radius: 4px;
-        padding: 6px;
-      }
-
-      input[type="checkbox"] {
-        transform: scale(1.2);
-        cursor: pointer;
-      }
-    }
-
-    tbody tr:hover {
-      background: color.adjust($primary-brown, $lightness: 30%);
+    
+    .subtitle {
+      color: $gray-dark;
+      font-size: 1rem;
+      margin: 0;
     }
   }
 }
-:host {
-    display: block;
-    height: 100vh;
-    overflow: hidden;
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  background: $white;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+  .empty-icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1rem;
+    color: $gray-medium;
   }
   
-  .dashboard-layout {
+  h3 {
+    font-size: 1.25rem;
+    color: $dark-color;
+    margin-bottom: 0.5rem;
+  }
+  
+  p {
+    color: $gray-dark;
+    margin: 0;
+  }
+}
+
+.request-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.request-card {
+  background: $white;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border-left: 4px solid $gray-medium;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  &.editable {
+    border-left-color: $warning-color;
+  }
+  
+  .request-header {
     display: flex;
-    height: 100vh;
-    overflow: hidden;
-  
-    app-user-sidebar {
-      
-      flex-shrink: 0;
-      background-color: $dark-brown;
-      color: white;
-      height: 100%;
-      position: relative; // or fixed if you want it to stay on scroll
-      top: 0;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid $gray-light;
+    
+    .request-id {
+      font-weight: 600;
+      color: $dark-color;
+      font-size: 0.875rem;
     }
-  
-    .request-container {
-      flex-grow: 1;
-      overflow-y: auto;
-      padding: 30px;
-      background-color: $background;
-      color: $text-color;
-      height: 100%;
+    
+    .request-status {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.5rem;
+      border-radius: 1rem;
+      text-transform: capitalize;
+      
+      &.pending {
+        background: color.adjust($warning-color, $lightness: 40%);
+        color: darken($warning-color, 20%);
+      }
+      
+      &.approved {
+        background: color.adjust($success-color, $lightness: 40%);
+        color: darken($success-color, 20%);
+      }
+      
+      &.rejected {
+        background: color.adjust($error-color, $lightness: 40%);
+        color: darken($error-color, 20%);
+      }
+      
+      &.in-progress {
+        background: color.adjust($info-color, $lightness: 40%);
+        color: darken($info-color, 20%);
+      }
     }
   }
   
+  .request-body {
+    padding: 1.5rem;
+    
+    .request-info {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+      
+      .info-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9375rem;
+        
+        .info-icon {
+          width: 18px;
+          height: 18px;
+          color: $primary-color;
+        }
+      }
+    }
+    
+    .request-actions {
+      display: flex;
+      gap: 0.75rem;
+      
+      .btn {
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.2s ease;
+        
+        svg {
+          width: 16px;
+          height: 16px;
+        }
+        
+        &-view {
+          background: $gray-light;
+          color: $dark-color;
+          
+          &:hover {
+            background: $gray-medium;
+          }
+        }
+        
+        &-edit {
+          background: $warning-color;
+          color: darken($warning-color, 40%);
+          
+          &:hover {
+            background: darken($warning-color, 10%);
+          }
+        }
+      }
+    }
+  }
+}
+
+// Modal Styles
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1rem;
   
+  .modal-box {
+    background: $white;
+    border-radius: 0.5rem;
+    width: 90%;
+    max-width: 1000px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    animation: modalFadeIn 0.3s ease-out;
+    
+    .modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid $gray-medium;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      h3 {
+        margin: 0;
+        font-size: 1.25rem;
+        color: $dark-color;
+      }
+      
+      .close-btn {
+        background: none;
+        border: none;
+        padding: 0.5rem;
+        cursor: pointer;
+        color: $gray-dark;
+        transition: color 0.2s;
+        
+        &:hover {
+          color: $dark-color;
+        }
+        
+        svg {
+          width: 24px;
+          height: 24px;
+        }
+      }
+    }
+    
+    .modal-body {
+      padding: 1.5rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+  }
+}
+
+.request-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: $gray-light;
+  border-radius: 0.25rem;
+  
+  .summary-item {
+    display: flex;
+    flex-direction: column;
+    
+    label {
+      font-size: 0.75rem;
+      color: $gray-dark;
+      margin-bottom: 0.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    span {
+      font-weight: 500;
+      color: $dark-color;
+      
+      &.pending {
+        color: darken($warning-color, 20%);
+      }
+      
+      &.approved {
+        color: darken($success-color, 20%);
+      }
+      
+      &.rejected {
+        color: darken($error-color, 20%);
+      }
+      
+      &.in-progress {
+        color: darken($info-color, 20%);
+      }
+    }
+  }
+}
+
+.permissions-container {
+  h4 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: $dark-color;
+  }
+  
+  .permissions-help {
+    color: $gray-dark;
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.module-accordion {
+  margin-bottom: 1rem;
+  border: 1px solid $gray-medium;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  
+  .module-header {
+    padding: 1rem 1.5rem;
+    background: $gray-light;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    
+    h5 {
+      margin: 0;
+      font-size: 1rem;
+      color: $dark-color;
+    }
+    
+    .module-toggle {
+      width: 20px;
+      height: 20px;
+      transition: transform 0.3s ease;
+      
+      &.expanded {
+        transform: rotate(180deg);
+      }
+    }
+  }
+  
+  .module-content {
+    padding: 1rem;
+    background: $white;
+  }
+}
+
+.table-container {
+  overflow-x: auto;
+  margin: 0 -1rem;
+  padding: 0 1rem;
+}
+
+.permissions-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+  
+  th, td {
+    padding: 0.75rem;
+    text-align: center;
+    vertical-align: middle;
+    border-bottom: 1px solid $gray-medium;
+  }
+  
+  th {
+    background: $primary-color;
+    color: $white;
+    font-weight: 500;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .function-name {
+    font-weight: 500;
+    color: $dark-color;
+    text-align: left;
+  }
+  
+  textarea {
+    width: 100%;
+    min-height: 60px;
+    padding: 0.5rem;
+    border: 1px solid $gray-medium;
+    border-radius: 0.25rem;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 0.875rem;
+    
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+    }
+    
+    &:disabled {
+      background: $gray-light;
+      cursor: not-allowed;
+    }
+  }
+  
+  .permission-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    
+    &:checked {
+      accent-color: $primary-color;
+    }
+    
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+  }
+  
+  tr:hover {
+    background-color: $hover-color;
+  }
+}
+
+.modal-actions {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid $gray-medium;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  
+  .btn {
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.25rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+    
+    &-save {
+      background: $success-color;
+      color: $white;
+      border: 1px solid $success-color;
+      
+      &:hover {
+        background: darken($success-color, 5%);
+      }
+    }
+    
+    &-close {
+      background: $white;
+      color: $dark-color;
+      border: 1px solid $gray-medium;
+      
+      &:hover {
+        background: $gray-light;
+      }
+    }
+  }
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 992px) {
+  .content {
+    margin-left: 0;
+    padding: 1rem;
+  }
+  
+  .request-summary {
+    grid-template-columns: 1fr;
+  }
+  
+  .request-body .request-info {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .modal-actions {
+    flex-direction: column;
+    
+    .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
