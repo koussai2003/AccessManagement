@@ -38,6 +38,24 @@
         <div class="modal-body">
           <div class="permissions-intro">
             <p>Please select the permissions you need for each module. Provide comments if necessary.</p>
+            <div class="on-behalf-toggle">
+              <label>
+                <input type="checkbox" [(ngModel)]="isOnBehalfRequest">
+                Submit request on behalf of someone else
+              </label>
+            </div>
+            <div class="form-group" *ngIf="isOnBehalfRequest">
+              <label>User Email (for whom you're requesting access)</label>
+              <input type="email" class="form-control" [(ngModel)]="actualUserEmail" 
+                     placeholder="Enter the user's email address" required (input)="checkEmailExists(actualUserEmail)">
+                     <div *ngIf="checkingEmail" class="email-check-status">
+                      <i class="fas fa-spinner fa-spin"></i> Checking email...
+                    </div>
+                    
+                    <div *ngIf="emailExists && !checkingEmail" class="email-error">
+                      <i class="fas fa-exclamation-circle"></i> This email belongs to an existing user
+                    </div>
+            </div>
           </div>
           
           <div class="module-section" *ngFor="let mod of modules; let i = index">

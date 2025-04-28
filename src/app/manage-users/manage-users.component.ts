@@ -34,26 +34,9 @@ export class ManageUsersComponent implements OnInit {
   allUserEmails: string[] = [];
   searchTerm: string = '';
   
-  societes: string[] = [
-    'ADWYA',
-    'NEROLIA',
-    'IKONIA',
-    'IKEL',
-    'AGORA DJERBA',
-    'PROTIS',
-    'L ATELIER INNOVATION',
-    'CIPHARM',
-    'CINPHARM',
-    'L ATELIER',
-    'LA BOÎTE',
-    'FATALES',
-    'MEDICIS',
-    'PROCHIDIA',
-    'TERIAK',
-    'ARGANIA',
-    'KIPROPHA',
-    'EKTP'
-  ];
+  societes: string[] = [];
+  fonctions: string[] = [];
+  directions: string[] = [];
   
   newUser = {
     name: '',
@@ -83,6 +66,7 @@ export class ManageUsersComponent implements OnInit {
   ngOnInit() {
     this.loadUsers();
     this.fetchAllUserEmails();
+    this.loadColumnValues();
   }
 
   loadUsers() {
@@ -125,7 +109,19 @@ export class ManageUsersComponent implements OnInit {
       user.role.toLowerCase().includes(term)
     );
   }
-
+  loadColumnValues() {
+    this.http.get<string[]>('http://localhost:5235/api/UserColumns/societe').subscribe({
+      next: (data) => this.societes = data
+    });
+    
+    this.http.get<string[]>('http://localhost:5235/api/UserColumns/fonction').subscribe({
+      next: (data) => this.fonctions = data
+    });
+    
+    this.http.get<string[]>('http://localhost:5235/api/UserColumns/direction').subscribe({
+      next: (data) => this.directions = data
+    });
+  }
   isValidNewUser(): boolean {
     return (
       !!this.newUser.name &&
@@ -155,9 +151,6 @@ export class ManageUsersComponent implements OnInit {
       !!this.editingUser?.name &&
       !!this.editingUser?.lastName &&
       !!this.editingUser?.email &&
-      !!this.editingUser?.fonction &&
-      !!this.editingUser?.societe &&
-      !!this.editingUser?.direction &&
       !!this.editingUser?.validateur1 &&
       this.isValidEditValidateur1()
     );

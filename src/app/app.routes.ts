@@ -10,14 +10,16 @@ import { ViewRequestsComponent } from './view-requests/view-requests.component';
 import { DemandesATraiterComponent } from './demandes-a-traiter/demandes-a-traiter.component';
 import { RequestHistoryComponent } from './request-history/request-history.component';
 import { ValidationHistoryComponent } from './validation-history/validation-history.component';
+import { UserColumnsManagementComponent } from './user-columns-management/user-columns-management.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'annex', component: AnnexComponent },
   { path: 'admin-dashboard', component: AdminDashboardComponent, canActivate: [AuthGuard], children: [
-    { path: 'users', component: ManageUsersComponent }, // ✅ Loads Manage Users
-    { path: 'applications', component: ManageApplicationsComponent } ,// ✅ Loads Manage Applications
-    { path: 'Requests', component: ViewRequestsComponent}
+    { path: 'users', component: ManageUsersComponent },
+    { path: 'applications', component: ManageApplicationsComponent } ,
+    { path: 'Requests', component: ViewRequestsComponent},
+    { path: 'user-columns', component: UserColumnsManagementComponent }
   ]},
   { path: 'applications', component: ApplicationPageComponent },
   { path: 'demandes-a-traiter', component: DemandesATraiterComponent },

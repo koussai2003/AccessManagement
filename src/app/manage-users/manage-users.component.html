@@ -40,8 +40,12 @@
           <!-- Row 2 -->
           <div class="form-group">
             <label>Function</label>
-            <input class="form-control" placeholder="Function" [(ngModel)]="newUser.fonction" name="fonction" required>
+            <select class="form-control" [(ngModel)]="newUser.fonction" name="fonction" required>
+              <option value="" disabled selected>Select Function</option>
+              <option *ngFor="let fonction of fonctions" [value]="fonction">{{ fonction }}</option>
+            </select>
           </div>
+          
           <div class="form-group">
             <label>Company</label>
             <select class="form-control" [(ngModel)]="newUser.societe" name="societe" required>
@@ -49,9 +53,13 @@
               <option *ngFor="let societe of societes" [value]="societe">{{ societe }}</option>
             </select>
           </div>
+          
           <div class="form-group">
             <label>Department</label>
-            <input class="form-control" placeholder="Direction" [(ngModel)]="newUser.direction" name="direction" required>
+            <select class="form-control" [(ngModel)]="newUser.direction" name="direction" required>
+              <option value="" disabled selected>Select Department</option>
+              <option *ngFor="let direction of directions" [value]="direction">{{ direction }}</option>
+            </select>
           </div>
           <div class="form-group">
             <label>Status</label>
@@ -206,8 +214,12 @@
             <!-- Row 2 -->
             <div class="form-group">
               <label>Function</label>
-              <input class="form-control" placeholder="Function" [(ngModel)]="editingUser.fonction" name="editFonction" required>
+              <select class="form-control" [(ngModel)]="editingUser.fonction" name="editFonction" required>
+                <option value="" disabled selected>Select Function</option>
+                <option *ngFor="let fonction of fonctions" [value]="fonction">{{ fonction }}</option>
+              </select>
             </div>
+            
             <div class="form-group">
               <label>Company</label>
               <select class="form-control" [(ngModel)]="editingUser.societe" name="editSociete" required>
@@ -215,9 +227,13 @@
                 <option *ngFor="let societe of societes" [value]="societe">{{ societe }}</option>
               </select>
             </div>
+            
             <div class="form-group">
               <label>Department</label>
-              <input class="form-control" placeholder="Direction" [(ngModel)]="editingUser.direction" name="editDirection" required>
+              <select class="form-control" [(ngModel)]="editingUser.direction" name="editDirection" required>
+                <option value="" disabled selected>Select Department</option>
+                <option *ngFor="let direction of directions" [value]="direction">{{ direction }}</option>
+              </select>
             </div>
             <div class="form-group">
               <label>Status</label>

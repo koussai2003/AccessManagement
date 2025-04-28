@@ -19,6 +19,10 @@ export class ApplicationPageComponent {
   selectedApp: any = null;
   modules: any[] = [];
   moduleExpanded: boolean[] = [];
+  isOnBehalfRequest = false;
+  actualUserEmail = '';
+  emailExists = false;
+  checkingEmail = false;
 
   constructor(private http: HttpClient, private router: Router) {
     this.loadApplications();
@@ -35,7 +39,24 @@ export class ApplicationPageComponent {
         }
       });
   }
+  checkEmailExists(email: string) {
+    if (!email) {
+      this.emailExists = false;
+      return;
+    }
 
+    this.checkingEmail = true;
+    this.http.get<boolean>(`http://localhost:5235/api/user/request/exists/${email}`)
+      .subscribe({
+        next: (exists) => {
+          this.emailExists = exists;
+          this.checkingEmail = false;
+        },
+        error: () => {
+          this.checkingEmail = false;
+        }
+      });
+  }
   openApplication(app: any) {
     this.selectedApp = app;
     this.http.get(`http://localhost:5235/api/modules/${app.id}`)
@@ -62,6 +83,10 @@ export class ApplicationPageComponent {
   }
 
   submitRequest() {
+    if (this.isOnBehalfRequest && this.emailExists) {
+      alert('Cannot submit request for an existing user - they should submit their own request');
+      return;
+    }
     const userEmail = localStorage.getItem('email');
     const userName = localStorage.getItem('name');
     const validateur1 = localStorage.getItem('validateur1');
@@ -71,7 +96,7 @@ export class ApplicationPageComponent {
       return;
     }
 
-    if (!validateur1) {
+    if (!validateur1 && !this.isOnBehalfRequest) {
       alert('Primary validator is required for this request.');
       return;
     }
@@ -83,8 +108,8 @@ export class ApplicationPageComponent {
       localStorage.getItem('Fonction'),
       localStorage.getItem('Direction'),)
     const requestPayload = {
-      userEmail,
-      userName,
+      userEmail: this.isOnBehalfRequest ? this.actualUserEmail : userEmail,
+      userName: this.isOnBehalfRequest ? 'To be determined' : userName,
       applicationName: this.selectedApp.name,
       modulesJson: JSON.stringify(this.modules),
       validateur1,
@@ -94,7 +119,10 @@ export class ApplicationPageComponent {
       fonction: localStorage.getItem('Fonction'),
       direction: localStorage.getItem('Direction'),
       lockedByAdmin: null,
-      validatorComment: null
+      validatorComment: null,
+      isOnBehalfRequest: this.isOnBehalfRequest,
+      actualUserEmail: this.isOnBehalfRequest ? this.actualUserEmail : null,
+      requestedByEmail: userEmail
     };
 
     this.http.post('http://localhost:5235/api/user/request', requestPayload)
@@ -102,6 +130,9 @@ export class ApplicationPageComponent {
         next: () => {
           alert('Access request submitted successfully!');
           this.showPermissionsModal = false;
+          this.isOnBehalfRequest = false;
+          this.actualUserEmail = '';
+          this.emailExists = false;
         },
         error: (err) => {
           console.error('Error submitting request:', err);

@@ -1,0 +1,49 @@
+<div class="user-columns-container">
+    <div class="page-header">
+      <h2><i class="fas fa-columns"></i> User Columns Management</h2>
+    </div>
+  
+    <div class="management-card">
+      <div class="card-header">
+        <h3>Manage Column Values</h3>
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+          <label>Column Type</label>
+          <select class="form-control" [(ngModel)]="selectedColumnType" (change)="onColumnTypeChange()">
+            <option *ngFor="let type of columnTypes" [value]="type.value">{{type.label}}</option>
+          </select>
+        </div>
+  
+        <div class="add-value-form">
+          <div class="form-group">
+            <label>Add New Value</label>
+            <div class="input-group">
+              <input class="form-control" [(ngModel)]="newValue" placeholder="Enter new value">
+              <button class="btn btn-primary" (click)="addValue()" [disabled]="!newValue.trim()">
+                <fa-icon [icon]="faPlus"></fa-icon> Add
+              </button>
+            </div>
+          </div>
+        </div>
+  
+        <div class="values-list">
+          <h4>Existing Values</h4>
+          <div *ngIf="isLoading" class="loading-spinner">
+            Loading...
+          </div>
+          <div *ngIf="!isLoading && values.length === 0" class="no-values">
+            No values found for this column type.
+          </div>
+          <ul *ngIf="!isLoading && values.length > 0" class="values-ul">
+            <li *ngFor="let value of values" class="value-item">
+              <span>{{value}}</span>
+              <button class="btn btn-danger" (click)="deleteValue(value)">
+                <fa-icon [icon]="faTrash"></fa-icon> Delete
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>

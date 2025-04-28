@@ -1,0 +1,129 @@
+@use "sass:color";
+
+// Color Variables
+$primary-color: #4a6fa5;
+$secondary-color: #6c8fc7;
+$success-color: #2ecc71;
+$danger-color: #e74c3c;
+$warning-color: #f39c12;
+$info-color: #3498db;
+$light-color: #f8f9fa;
+$dark-color: #2c3e50;
+$border-color: #e0e0e0;
+
+// Font Variables
+$font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+$font-size-base: 0.9375rem; // 15px
+$font-size-lg: 1.125rem;    // 18px
+$font-size-sm: 0.8125rem;   // 13px
+
+// Spacing Variables
+$spacer: 1rem;
+$border-radius: 8px;
+$box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+.user-columns-container {
+  font-family: $font-family;
+  color: $dark-color;
+  padding: $spacer * 2;
+  background-color: $light-color;
+  min-height: 100vh;
+
+  .page-header {
+    margin-bottom: $spacer * 2;
+    padding-bottom: $spacer;
+    border-bottom: 1px solid $border-color;
+
+    h2 {
+      font-size: $font-size-lg * 1.5;
+      font-weight: 600;
+      margin: 0;
+      color: $primary-color;
+    }
+  }
+
+  .management-card {
+    background-color: white;
+    border-radius: $border-radius;
+    box-shadow: $box-shadow;
+    margin-bottom: $spacer * 2;
+    overflow: hidden;
+
+    .card-header {
+      padding: $spacer * 1.5;
+      background-color: $light-color;
+      border-bottom: 1px solid $border-color;
+
+      h3 {
+        font-size: $font-size-lg;
+        margin: 0;
+        font-weight: 600;
+        color: $dark-color;
+      }
+    }
+
+    .card-body {
+      padding: $spacer * 1.5;
+    }
+  }
+
+  .add-value-form {
+    margin: $spacer * 1.5 0;
+
+    .input-group {
+      display: flex;
+      gap: $spacer;
+
+      input {
+        flex: 1;
+      }
+    }
+  }
+
+  .values-list {
+    margin-top: $spacer * 2;
+
+    h4 {
+      font-size: $font-size-base;
+      margin-bottom: $spacer;
+      color: $dark-color;
+      font-weight: 500;
+    }
+
+    .values-ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      border: 1px solid $border-color;
+      border-radius: $border-radius;
+      overflow: hidden;
+
+      .value-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: $spacer;
+        border-bottom: 1px solid $border-color;
+        transition: background-color 0.2s ease;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        &:hover {
+          background-color: rgba($primary-color, 0.05);
+        }
+
+        button {
+          margin-left: $spacer;
+        }
+      }
+    }
+  }
+
+  .loading-spinner, .no-values {
+    padding: $spacer;
+    text-align: center;
+    color: color.adjust($dark-color, $lightness: 30%);
+  }
+}

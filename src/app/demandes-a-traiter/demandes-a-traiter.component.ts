@@ -67,25 +67,38 @@ export class DemandesATraiterComponent implements OnInit {
     if (!email) return;
   
     this.isValidating = true;
-    this.http.post(`http://localhost:5235/api/admin/requests/validate/${id}`, {
+    const validationData = {
       validatorEmail: email,
-      comment: this.validationComment,
-      headers: { 'Content-Type': 'application/json' }
-    }).subscribe({
-      next: () => {
+      comment: this.validationComment
+    };
+    this.http.post(`http://localhost:5235/api/admin/requests/validate/${id}`, validationData)
+    .subscribe({
+      next: (response: any) => {
         this.showModal = false;
         this.showValidationComment = false;
         this.validationComment = '';
         this.loadPendingRequests();
-        this.snackBar.open('Request validated successfully', 'Close', {
+        this.snackBar.open(response.message || 'Request validated successfully', 'Close', {
           duration: 9000
         });
       },
       error: (err) => {
         console.error('Validation failed:', err);
-        this.snackBar.open('Validation failed. Please try again.', 'Close', {
-          duration: 9000
+        let errorMessage = 'Validation failed. Please try again.';
+        if (err.error?.message) {
+          errorMessage = err.error.message;
+          
+          // Add more detailed error info if available
+          if (err.error.details) {
+            errorMessage += ` Details: ${JSON.stringify(err.error.details)}`;
+          }
+        }
+        
+        this.snackBar.open(errorMessage, 'Close', {
+          duration: 9000,
+          panelClass: ['error-snackbar']
         });
+        
       },
       complete: () => {
         this.isValidating = false;

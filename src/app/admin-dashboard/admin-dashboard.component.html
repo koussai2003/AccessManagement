@@ -25,6 +25,12 @@
           </svg>
           <span>Manage Applications</span>
         </li>
+        <li [ngClass]="{ active: isActive('user-columns') }" (click)="navigateTo('user-columns')">
+          <svg class="nav-icon" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M3,5H9V11H3V5M5,7V9H7V7H5M11,7H21V9H11V7M11,15H21V17H11V15M5,20L1.5,16.5L2.91,15.09L5,17.17L9.59,12.59L11,14L5,20Z" />
+          </svg>
+          <span>User Columns</span>
+        </li>
         <li [ngClass]="{ active: isActive('Requests') }" (click)="navigateTo('Requests')">
           <svg class="nav-icon" viewBox="0 0 24 24">
             <path fill="currentColor" d="M13,9H18.5L13,3.5V9M6,2H14L20,8V20A2,2 0 0,1 18,22H6C4.89,22 4,21.1 4,20V4C4,2.89 4.89,2 6,2M11,15V12H9V15H6V17H9V20H11V17H14V15H11Z" />
@@ -32,6 +38,7 @@
           <span>View Requests</span>
           <span class="badge badge-warning" *ngIf="pendingRequests > 0">{{pendingRequests}}</span>
         </li>
+        
       </ul>
       
       <div class="sidebar-footer">

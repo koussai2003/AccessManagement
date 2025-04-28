@@ -320,7 +320,43 @@ $hover-color: rgba(74, 111, 165, 0.1);
     }
   }
 }
+.on-behalf-toggle {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background-color: #f8f9fa;
+  border-radius: 0.25rem;
+  
+  label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+.email-check-status {
+  color: #666;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  
+  i {
+    margin-right: 0.5rem;
+  }
+}
 
+.email-error {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  
+  i {
+    margin-right: 0.5rem;
+  }
+}
 @keyframes modalFadeIn {
   from {
     opacity: 0;
